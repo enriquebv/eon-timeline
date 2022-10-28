@@ -1,6 +1,6 @@
 {
-  "name": "timeline-js",
-  "version": "0.0.1",
+  "name": "virtual-headless-timeline",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",

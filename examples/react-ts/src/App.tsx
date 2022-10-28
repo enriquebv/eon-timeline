@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import Timeline, { TimelineDataset, TimelineDOM } from '../../dist/index.js'
-import makeExampleItems from '../utils/example-data'
+import Timeline, { TimelineDataset, TimelineDOM } from '../../../dist/index.js'
+import makeExampleItems from '../../utils/example-data'
 import './index.css'
 
 const now = Date.now()
