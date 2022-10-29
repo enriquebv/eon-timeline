@@ -49,4 +49,30 @@ export class Timeline {
     this.options.timeWindow = { start, end }
     this.calculate()
   }
+
+  static TICKS_MS_DURATION = {
+    minutes: 60_000,
+  }
+
+  getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+    const tickSpan = Timeline.TICKS_MS_DURATION[scale as 'minutes']
+    const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
+    const rangePercent = rangeSpan / 100
+
+    const timestampStartReference = new Date(this.options.timeWindow.start).setSeconds(0, 0)
+
+    const ticksCount = rangeSpan / tickSpan
+
+    const ticks = Array(ticksCount)
+      .fill(null)
+      .map((_, tickIndex) => {
+        const timestamp: number = timestampStartReference + tickIndex * tickSpan
+        const offsetStart = (timestamp - this.options.timeWindow.start) / rangePercent / 100
+        const span = (timestamp + tickSpan - timestamp) / rangePercent / 100
+
+        return { timestamp, offsetStart, span }
+      })
+
+    return ticks
+  }
 }

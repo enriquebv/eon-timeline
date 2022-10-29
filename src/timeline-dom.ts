@@ -139,6 +139,10 @@ export default class TimelineDOM {
     this.renderCallback(result)
   }
 
+  getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+    return this.timelines[0].getRangeTicks(scale)
+  }
+
   static getTimelineStyle() {
     return {
       position: 'relative',
