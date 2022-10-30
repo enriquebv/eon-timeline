@@ -73,12 +73,15 @@
 
 ### First release (v1.0.0)
 
-- [ ] Implement basic dataset:
+- [ ] Create dataset orchestrator:
   - [x] Basic dataset creation.
-  - [ ] Add unit tests to dataset logic.
+  - [ ] Add unit tests.
   - [ ] Update item.
   - [ ] Add item.
   - [ ] Remove item.
+- [x] Create timeline item entity
+  - [x] Added basic range offets calculation
+  - [x] Added unit tests
 - [ ] Implement DOM layer:
   - [x] `ResizeObserver` to support responsive.
   - [x] Pan gesture support; will move to future or past using current timeline range.
