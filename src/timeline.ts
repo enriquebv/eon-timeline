@@ -1,5 +1,5 @@
-import type { Range } from './types'
-import type { TimelineDataset } from './timeline-dataset'
+import type { Item, Range } from './types'
+import { TimelineItem } from './timeline-item'
 
 interface Options {
   timeWindow: Range
@@ -8,6 +8,7 @@ interface Options {
 const HOUR_IN_MS = 1000 * 60 * 60
 
 export class Timeline {
+  items: Map<string | number, TimelineItem> = new Map()
   options: Options = {
     timeWindow: {
       start: Date.now(),
@@ -15,23 +16,34 @@ export class Timeline {
     },
   }
   timeWindowDuration: number
+  addItem: (item: Item) => void
 
-  dataset: TimelineDataset
-
-  constructor(options: { dataset: TimelineDataset; range: Range }) {
-    this.dataset = options.dataset
-
+  constructor(options: { items: Item[]; range: Range }) {
     this.timeWindowDuration = Date.now() + HOUR_IN_MS - Date.now()
 
     this.options = {
       timeWindow: { ...options.range },
     }
 
+    for (const item of options.items) {
+      this.items.set(item.id, new TimelineItem(item))
+    }
+
+    // Note: addItem is just an alias to updateItem method.
+    this.addItem = this.updateItem.bind(this)
     this.calculate = this.calculate.bind(this)
   }
 
+  updateItem(item: Item) {
+    this.items.set(item.id, new TimelineItem(item))
+  }
+
+  removeItem(id: string | number) {
+    this.items.delete(id)
+  }
+
   calculate() {
-    for (let [, item] of this.dataset.items) {
+    for (let [, item] of this.items) {
       item.computeStatusFromRange(this.options.timeWindow)
     }
 
@@ -39,7 +51,7 @@ export class Timeline {
   }
 
   getItemsInRange() {
-    const result = Array.from(this.dataset.items.values()).filter((item: any) => item.status.inRange)
+    const result = Array.from(this.items.values()).filter((item: any) => item.status.inRange)
 
     return result
   }
