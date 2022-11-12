@@ -39,10 +39,11 @@
 - Pre-built components to most used UI libraries/frameworks:
   - React
   - Vue
+- Cluster mode.
 
 ### Coming soon features:
 
-- Cluster mode.
+- Nested timelines.
 - SSR support.
 - Pre-built components to most used UI libraries/frameworks:
   - Svelte

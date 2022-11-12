@@ -140,7 +140,13 @@ export default class TimelineDOM {
   }
 
   getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
-    return this.timelines[0].getRangeTicks(scale)
+    const ticks = this.timelines[0].getRangeTicks(scale)
+
+    const domTicks = ticks.map((tick, i) => {
+      return { ...tick, ofPx: tick.offsetStart / (this.msPerPx || 0) }
+    })
+
+    return domTicks
   }
 
   static getTimelineStyle() {

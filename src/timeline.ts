@@ -19,7 +19,7 @@ export class Timeline {
   addItem: (item: Item) => void
 
   constructor(options: { items: Item[]; range: Range }) {
-    this.timeWindowDuration = Date.now() + HOUR_IN_MS - Date.now()
+    this.timeWindowDuration = options.range.end - options.range.start
 
     this.options = {
       timeWindow: { ...options.range },
@@ -64,25 +64,56 @@ export class Timeline {
 
   static TICKS_MS_DURATION = {
     minutes: 60_000,
+    hours: 60 * 60_000,
+    days: 24 * 60 * 60_000,
   }
 
   getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
-    const tickSpan = Timeline.TICKS_MS_DURATION[scale as 'minutes']
-    const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
-    const rangePercent = rangeSpan / 100
+    switch (scale) {
+      case 'minutes':
+        return Timeline.getMinuteTicks(this.options.timeWindow)
+      case 'hours':
+        return Timeline.getHoursTicks(this.options.timeWindow)
+      default:
+        throw new Error(`Unknown scale in getRangeTicks method`, { cause: scale })
+    }
+  }
 
-    const timestampStartReference = new Date(this.options.timeWindow.start).setSeconds(0, 0)
+  static getMinuteTicks(range: Range) {
+    const TICK_SPAN = 60_000
+    const rangeSpan = range.end - range.end
 
-    const ticksCount = rangeSpan / tickSpan
+    const ticksStart = new Date(range.start - rangeSpan).setUTCMinutes(0, 0, 0)
+    const ticksEnd = new Date(range.end + rangeSpan).setUTCMinutes(0, 0, 0)
+    const estimatedTicks = Math.max(1, (ticksEnd - ticksStart) / TICK_SPAN)
 
-    const ticks = Array(ticksCount)
+    const ticks = Array(estimatedTicks)
       .fill(null)
       .map((_, tickIndex) => {
-        const timestamp: number = timestampStartReference + tickIndex * tickSpan
-        const offsetStart = (timestamp - this.options.timeWindow.start) / rangePercent / 100
-        const span = (timestamp + tickSpan - timestamp) / rangePercent / 100
+        const timestamp: number = ticksStart + tickIndex * TICK_SPAN
+        const offsetStart = timestamp - range.start
 
-        return { timestamp, offsetStart, span }
+        return { timestamp, offsetStart }
+      })
+
+    return ticks
+  }
+
+  static getHoursTicks(range: Range) {
+    const TICK_SPAN = 3_600_000
+    const rangeSpan = range.end - range.start
+
+    const ticksStart = new Date(range.start - rangeSpan).setUTCMinutes(0, 0, 0)
+    const ticksEnd = new Date(range.end + rangeSpan).setUTCMinutes(0, 0, 0)
+    const estimatedTicks = Math.max(1, (ticksEnd - ticksStart) / TICK_SPAN)
+
+    const ticks = Array(estimatedTicks)
+      .fill(null)
+      .map((_, tickIndex) => {
+        const timestamp: number = ticksStart + tickIndex * TICK_SPAN
+        const offsetStart = timestamp - range.start
+
+        return { timestamp, offsetStart }
       })
 
     return ticks

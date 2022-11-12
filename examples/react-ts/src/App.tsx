@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import Timeline, { TimelineDataset, TimelineDOM } from '../../../dist/index.js'
+import Timeline, { TimelineDOM } from '../../../dist/index.js'
 import makeExampleItems from '../../utils/example-data'
 import './index.css'
 
@@ -7,42 +7,47 @@ const now = Date.now()
 
 const DEFAULT_RANGE = {
   start: now,
-  end: now + 60 * 60 * 1000,
+  // end: now + 24 * 60 * 60 * 1000,
+  end: now + 2 * 60 * 60 * 1000,
 }
 
 export default function TimelineApp() {
   const containerRef = useRef(null)
   const [timelineDoms, setTimlineDoms] = useState<any[]>([])
+  const [ticks, setTicks] = useState<any[]>([])
 
   function setupTimeline() {
     const container = containerRef.current as unknown as HTMLElement
     const timelines = [
       new Timeline({
-        dataset: new TimelineDataset(makeExampleItems()),
+        items: makeExampleItems(),
         range: DEFAULT_RANGE,
       }),
-      new Timeline({
-        dataset: new TimelineDataset(makeExampleItems()),
-        range: DEFAULT_RANGE,
-      }),
-      new Timeline({
-        dataset: new TimelineDataset(makeExampleItems()),
-        range: DEFAULT_RANGE,
-      }),
-      new Timeline({
-        dataset: new TimelineDataset(makeExampleItems()),
-        range: DEFAULT_RANGE,
-      }),
-      new Timeline({
-        dataset: new TimelineDataset(makeExampleItems()),
-        range: DEFAULT_RANGE,
-      }),
+      // new Timeline({
+      //   items: makeExampleItems(),
+      //   range: DEFAULT_RANGE,
+      // }),
+      // new Timeline({
+      //   items: makeExampleItems(),
+      //   range: DEFAULT_RANGE,
+      // }),
+      // new Timeline({
+      //   items: makeExampleItems(),
+      //   range: DEFAULT_RANGE,
+      // }),
+      // new Timeline({
+      //   items: makeExampleItems(),
+      //   range: DEFAULT_RANGE,
+      // }),
     ]
 
-    new TimelineDOM({
+    const t = new TimelineDOM({
       container,
       timelines,
-      onRender: (domItems) => setTimlineDoms(() => domItems),
+      onRender: (domItems) => {
+        setTimlineDoms(() => domItems)
+        setTicks(t.getRangeTicks('hours'))
+      },
     })
   }
 
@@ -61,6 +66,14 @@ export default function TimelineApp() {
             own timeline experience.
           </li>
         </ul>
+
+        <div style={{ position: 'relative', overflow: 'hidden', height: '16px' }}>
+          {ticks.map((t) => (
+            <span style={{ position: 'absolute', left: `${t.ofPx}px`, fontSize: '10px' }}>
+              {new Date(t.timestamp).toLocaleTimeString()}
+            </span>
+          ))}
+        </div>
         <div className='demo-timeline-container' ref={containerRef}>
           {timelineDoms.length > 0
             ? timelineDoms.map((t, i) => (
