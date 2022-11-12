@@ -63,58 +63,61 @@ export class Timeline {
   }
 
   static TICKS_MS_DURATION = {
-    minutes: 60_000,
-    hours: 60 * 60_000,
-    days: 24 * 60 * 60_000,
+    minutes: {
+      interval: 60_000,
+      dateCleaner: (date: number): number => new Date(date).setUTCSeconds(0, 0),
+    },
+    hours: {
+      interval: 3_600_000,
+      dateCleaner: (date: number): number => new Date(date).setUTCMinutes(0, 0, 0),
+    },
+    days: {
+      interval: 86_400_000,
+      dateCleaner: (date: number): number => new Date(date).setUTCHours(0, 0, 0, 0),
+    },
   }
 
   getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+    const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
+    let offsetStart = this.options.timeWindow.start - rangeSpan
+
     switch (scale) {
       case 'minutes':
-        return Timeline.getMinuteTicks(this.options.timeWindow)
+        offsetStart = new Date(offsetStart).setUTCSeconds(0, 0)
+        break
       case 'hours':
-        return Timeline.getHoursTicks(this.options.timeWindow)
+        offsetStart = new Date(offsetStart).setUTCMinutes(0, 0, 0)
+        break
+      case 'days':
+        offsetStart = new Date(offsetStart).setUTCHours(0, 0, 0)
+        break
       default:
         throw new Error(`Unknown scale in getRangeTicks method`, { cause: scale })
     }
-  }
 
-  static getMinuteTicks(range: Range) {
-    const TICK_SPAN = 60_000
-    const rangeSpan = range.end - range.end
+    const offsetEnd = offsetStart + rangeSpan * 2
+    const interval = Timeline.TICKS_MS_DURATION[scale].interval
 
-    const ticksStart = new Date(range.start - rangeSpan).setUTCMinutes(0, 0, 0)
-    const ticksEnd = new Date(range.end + rangeSpan).setUTCMinutes(0, 0, 0)
-    const estimatedTicks = Math.max(1, (ticksEnd - ticksStart) / TICK_SPAN)
-
-    const ticks = Array(estimatedTicks)
-      .fill(null)
-      .map((_, tickIndex) => {
-        const timestamp: number = ticksStart + tickIndex * TICK_SPAN
-        const offsetStart = timestamp - range.start
-
-        return { timestamp, offsetStart }
-      })
+    const ticks = Timeline.getDatesInRangeByInterval({ start: offsetStart, end: offsetEnd }, interval).map((t) => ({
+      timestamp: t.timestamp,
+      offsetStart: t.timestamp - this.options.timeWindow.start,
+    }))
 
     return ticks
   }
 
-  static getHoursTicks(range: Range) {
-    const TICK_SPAN = 3_600_000
-    const rangeSpan = range.end - range.start
+  static getDatesInRangeByInterval(range: Range, interval: number) {
+    const dates = [range.start]
 
-    const ticksStart = new Date(range.start - rangeSpan).setUTCMinutes(0, 0, 0)
-    const ticksEnd = new Date(range.end + rangeSpan).setUTCMinutes(0, 0, 0)
-    const estimatedTicks = Math.max(1, (ticksEnd - ticksStart) / TICK_SPAN)
+    while (dates[dates.length - 1] < range.end) {
+      dates.push(dates[dates.length - 1] + interval)
+    }
 
-    const ticks = Array(estimatedTicks)
-      .fill(null)
-      .map((_, tickIndex) => {
-        const timestamp: number = ticksStart + tickIndex * TICK_SPAN
-        const offsetStart = timestamp - range.start
+    const ticks = dates.map((timestamp) => {
+      const offsetStart = timestamp - range.start
 
-        return { timestamp, offsetStart }
-      })
+      return { timestamp, offsetStart }
+    })
 
     return ticks
   }

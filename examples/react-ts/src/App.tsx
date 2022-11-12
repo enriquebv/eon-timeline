@@ -8,7 +8,7 @@ const now = Date.now()
 const DEFAULT_RANGE = {
   start: now,
   // end: now + 24 * 60 * 60 * 1000,
-  end: now + 2 * 60 * 60 * 1000,
+  end: now + 24 * 60 * 60 * 1000,
 }
 
 export default function TimelineApp() {
@@ -46,7 +46,7 @@ export default function TimelineApp() {
       timelines,
       onRender: (domItems) => {
         setTimlineDoms(() => domItems)
-        setTicks(t.getRangeTicks('hours'))
+        setTicks(t.getRangeTicks('days'))
       },
     })
   }
@@ -70,7 +70,7 @@ export default function TimelineApp() {
         <div style={{ position: 'relative', overflow: 'hidden', height: '16px' }}>
           {ticks.map((t) => (
             <span style={{ position: 'absolute', left: `${t.ofPx}px`, fontSize: '10px' }}>
-              {new Date(t.timestamp).toLocaleTimeString()}
+              {new Date(t.timestamp).toDateString()}
             </span>
           ))}
         </div>

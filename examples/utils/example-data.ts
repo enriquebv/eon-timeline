@@ -9,7 +9,7 @@ export function makeExampleItems() {
     start.setMinutes(start.getMinutes() + Math.max(1, Math.floor(Math.random() * 10)))
 
     const end = new Date(start)
-    end.setMinutes(end.getMinutes() + Math.max(5, Math.floor(Math.random() * 10)))
+    end.setMinutes(end.getMinutes() + Math.max(60, Math.floor(Math.random() * 100)))
 
     lastStart = end.valueOf()
 
