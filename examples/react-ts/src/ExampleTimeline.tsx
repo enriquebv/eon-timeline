@@ -76,7 +76,7 @@ export default function ExampleTimelineDay(props: ExampleProps) {
     ]
     const onRender = (domItems: any[]) => {
       setTimlineDoms(() => domItems)
-      setTicks(timelineDom.getRangeTicks(props.scale))
+      setTicks(timelineDom.getRangeTimestamps(props.scale))
     }
 
     const timelineDom = new TimelineDOM({ container, timelines, onRender })
@@ -90,7 +90,7 @@ export default function ExampleTimelineDay(props: ExampleProps) {
 
       <div style={{ position: 'relative', overflow: 'hidden', height: '16px' }}>
         {ticks.map((t) => (
-          <span style={{ position: 'absolute', left: `${t.ofPx}px`, fontSize: '10px' }}>
+          <span style={{ position: 'absolute', left: `${t.left}px`, fontSize: '10px' }}>
             {formatDate(t.timestamp)}
           </span>
         ))}
