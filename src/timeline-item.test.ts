@@ -50,7 +50,7 @@ describe('TimelineDatasetItem', () => {
     expect(datasetItem.computeStatusFromRange(RANGE)).toBeUndefined()
   })
 
-  test('Method computeStatusFromRange() correctly hydrates public state', () => {
+  test('Method computeStatusFromRange() hydrates public state if item is in range', () => {
     const { datasetItem } = getDefaults()
 
     datasetItem.computeStatusFromRange(RANGE)
@@ -67,4 +67,10 @@ describe('TimelineDatasetItem', () => {
       }),
     })
   })
+
+  test.todo('Set .status.inRange to true if property if item starts before range, and ends inside the range.')
+  test.todo('Set .status.inRange to true property if item starts inside range, and ends inside the range.')
+  test.todo('Set .status.inRange to true property if item starts inside range, and ends after the range.')
+  test.todo('Set .status.inRange to true property if item starts before range, and ends after the range.')
+  test.todo('Method computeStatusFromRange() resets public state if item is not in range')
 })
