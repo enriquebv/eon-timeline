@@ -139,8 +139,15 @@ export default class TimelineDOM {
     this.renderCallback(result)
   }
 
-  getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
-    return this.timelines[0].getRangeTicks(scale)
+  getRangeTimestamps(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+    const timestamps = this.timelines[0].getRangeTimestamps(scale)
+
+    const domRangeTimestamps = timestamps.map(({ timestamp, offsetStart }) => {
+      const offsetFromLeft = offsetStart / (this.msPerPx || 0)
+      return { timestamp, left: offsetFromLeft }
+    })
+
+    return domRangeTimestamps
   }
 
   static getTimelineStyle() {

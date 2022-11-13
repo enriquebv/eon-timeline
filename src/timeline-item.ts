@@ -50,7 +50,8 @@ export class TimelineItem {
     const rangeStatus =
       (startsBeforeRange && endsInsideRange) ||
       (startsInsideRange && endsInsideRange) ||
-      (startsInsideRange && endsAfterRange)
+      (startsInsideRange && endsAfterRange) ||
+      (startsBeforeRange && endsAfterRange)
 
     this.status.inRange = rangeStatus
   }

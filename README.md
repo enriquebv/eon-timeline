@@ -39,10 +39,11 @@
 - Pre-built components to most used UI libraries/frameworks:
   - React
   - Vue
+- Cluster mode.
 
 ### Coming soon features:
 
-- Cluster mode.
+- Nested timelines.
 - SSR support.
 - Pre-built components to most used UI libraries/frameworks:
   - Svelte
@@ -73,12 +74,12 @@
 
 ### First release (v1.0.0)
 
-- [ ] Create dataset orchestrator:
-  - [x] Basic dataset creation.
-  - [ ] Add unit tests.
-  - [ ] Update item.
-  - [ ] Add item.
-  - [ ] Remove item.
+- [x] Implement timeline manager:
+  - [x] Basic range and calc orchestration.
+  - [x] Add unit tests.
+  - [x] Update item.
+  - [x] Add item.
+  - [x] Remove item.
 - [x] Create timeline item entity
   - [x] Added basic range offets calculation
   - [x] Added unit tests
@@ -87,11 +88,6 @@
   - [x] Pan gesture support; will move to future or past using current timeline range.
   - [ ] Add unit tests to DOM layer.
   - [ ] Scroll gesture support; will modify current timeline range.
-- [ ] Implement timeline manager:
-  - [x] Basic range and calc orchestration.
-  - [ ] Add unit tests.
-  - [ ] Add integration tests.
-  - [ ] Add range edit.
 - [ ] Refactor code to simplify API.
 - [ ] Create pre-built React component.
 - [ ] Create pre-built Vue component.
