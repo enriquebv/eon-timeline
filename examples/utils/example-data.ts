@@ -1,15 +1,26 @@
 const ITEMS_COUNT = 10_000
 
-export function makeExampleItems() {
+export interface EventsExampleOptions {
+  gapRangeInMinutes: {
+    min: number,
+    max: number
+  }
+  durationRangeInMinutes: {
+    min: number,
+    max: number
+  } 
+}
+
+export function makeExampleItems(options: EventsExampleOptions) {
   const items: any = []
   let lastStart: number = Date.now()
 
   while (items.length < ITEMS_COUNT) {
     const start = new Date(lastStart)
-    start.setMinutes(start.getMinutes() + Math.max(1, Math.floor(Math.random() * 10)))
+    start.setMinutes(start.getMinutes() + Math.max(options.gapRangeInMinutes.min, Math.floor(Math.random() * options.gapRangeInMinutes.min)))
 
     const end = new Date(start)
-    end.setMinutes(end.getMinutes() + Math.max(60, Math.floor(Math.random() * 100)))
+    end.setMinutes(end.getMinutes() + Math.max(options.durationRangeInMinutes.min, Math.floor(Math.random() * options.durationRangeInMinutes.max)))
 
     lastStart = end.valueOf()
 
