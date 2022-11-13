@@ -1,20 +1,19 @@
-import type { Item, Range } from './types'
+import type { Item, Range, TickScale } from './types'
 import { TimelineItem } from './timeline-item'
 
 interface Options {
   timeWindow: Range
 }
 
-const HOUR_IN_MS = 1000 * 60 * 60
+export class UnknownScaleException extends Error {
+  constructor() {
+    super('Unknown scale, please use one of type TickScale.')
+  }
+}
 
 export class Timeline {
   items: Map<string | number, TimelineItem> = new Map()
-  options: Options = {
-    timeWindow: {
-      start: Date.now(),
-      end: Date.now() + HOUR_IN_MS,
-    },
-  }
+  options: Options;
   timeWindowDuration: number
   addItem: (item: Item) => void
 
@@ -62,26 +61,31 @@ export class Timeline {
     this.calculate()
   }
 
-  static TICKS_MS_DURATION = {
-    minutes: {
-      interval: 60_000,
-      dateCleaner: (date: number): number => new Date(date).setUTCSeconds(0, 0),
-    },
-    hours: {
-      interval: 3_600_000,
-      dateCleaner: (date: number): number => new Date(date).setUTCMinutes(0, 0, 0),
-    },
-    days: {
-      interval: 86_400_000,
-      dateCleaner: (date: number): number => new Date(date).setUTCHours(0, 0, 0, 0),
-    },
+  static UNITS_IN_MILLISECONDS = {
+    seconds:1000,
+    minutes: 60_000,
+    hours: 3_600_000,
+    days: 86_400_000,
   }
 
-  getRangeTicks(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+  private static getDatesInRangeByInterval(range: Range, interval: number) {
+    const timestamps: number[] = [range.start]
+
+    while (timestamps[timestamps.length - 1] < range.end) {
+      timestamps.push(timestamps[timestamps.length - 1] + interval)
+    }
+
+    return timestamps
+  }
+
+  getRangeTimestamps(scale: TickScale) {
     const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
-    let offsetStart = this.options.timeWindow.start - rangeSpan
+    let offsetStart = this.options.timeWindow.start - (rangeSpan / 2)
 
     switch (scale) {
+      case 'seconds':
+        offsetStart = new Date(offsetStart).setUTCMilliseconds(0)
+        break
       case 'minutes':
         offsetStart = new Date(offsetStart).setUTCSeconds(0, 0)
         break
@@ -92,33 +96,21 @@ export class Timeline {
         offsetStart = new Date(offsetStart).setUTCHours(0, 0, 0)
         break
       default:
-        throw new Error(`Unknown scale in getRangeTicks method`, { cause: scale })
+        throw new UnknownScaleException() 
     }
 
-    const offsetEnd = offsetStart + rangeSpan * 2
-    const interval = Timeline.TICKS_MS_DURATION[scale].interval
+    const offsetEnd = offsetStart + rangeSpan * 1.5
+    const interval = Timeline.UNITS_IN_MILLISECONDS[scale]
+     // Note: ticksRange always will be x2 the timeline timespan.
+     // This is intentional, since it is expected to obtain an offset
+     // of the start and end date in order to be able to respond to dates
+     // that are not yet visible.
+    const offsetRange = { start: offsetStart, end: offsetEnd }
 
-    const ticks = Timeline.getDatesInRangeByInterval({ start: offsetStart, end: offsetEnd }, interval).map((t) => ({
-      timestamp: t.timestamp,
-      offsetStart: t.timestamp - this.options.timeWindow.start,
-    }))
-
-    return ticks
-  }
-
-  static getDatesInRangeByInterval(range: Range, interval: number) {
-    const dates = [range.start]
-
-    while (dates[dates.length - 1] < range.end) {
-      dates.push(dates[dates.length - 1] + interval)
-    }
-
-    const ticks = dates.map((timestamp) => {
-      const offsetStart = timestamp - range.start
-
-      return { timestamp, offsetStart }
-    })
-
-    return ticks
+    return Timeline.getDatesInRangeByInterval(offsetRange, interval)
+      .map((date) => ({
+        timestamp: date,
+        offsetStart: date - this.options.timeWindow.start,
+      }))
   }
 }
