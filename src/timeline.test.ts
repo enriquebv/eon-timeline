@@ -1,12 +1,12 @@
 import { Timeline, UnknownScaleException } from './timeline'
-import { TickScale } from './types'
+import { Range, TickScale } from './types'
 
 describe('Timeline', () => {
   function getDefaults() {
     const HOUR_IN_MILLISECONDS = 3_600_000
     const THREE_HOURS_RANGE = {
       start: Date.now(),
-      end: Date.now() + (3 * HOUR_IN_MILLISECONDS)
+      end: Date.now() + 3 * HOUR_IN_MILLISECONDS,
     }
     const item = {
       id: 1,
@@ -100,7 +100,7 @@ describe('Timeline', () => {
 
     timeline.setTimeWindow({
       start,
-      end
+      end,
     })
 
     expect(timeline.options.timeWindow.start).toBe(start)
@@ -109,10 +109,10 @@ describe('Timeline', () => {
 
   test('getItemsInRange returns an array of items', () => {
     const { timeline } = getDefaults()
-    
+
     expect(timeline.getItemsInRange()).toBeInstanceOf(Array)
   })
-  
+
   test('.getRangeTicks method correctly returns list of timestamps with offset', () => {
     const { timeline } = getDefaults()
     const scales: TickScale[] = ['seconds', 'minutes', 'hours', 'days']
@@ -132,5 +132,31 @@ describe('Timeline', () => {
     const { timeline } = getDefaults()
 
     expect(() => timeline.getRangeTimestamps('years' as TickScale)).toThrow(UnknownScaleException)
+  })
+
+  test('.setTimeWindow method modifies internal values', () => {
+    const { timeline } = getDefaults()
+    const TEST_CASES = [
+      {
+        range: {
+          start: 1671877537997,
+          end: 1671877538997,
+        } as Range,
+        expectedTimeWindow: 1000,
+      },
+      {
+        range: {
+          start: 1671877537997,
+          end: 1671877547997,
+        } as Range,
+        expectedTimeWindow: 10000,
+      },
+    ]
+
+    TEST_CASES.forEach((testCase) => {
+      timeline.setTimeWindow(testCase.range)
+      expect(timeline.options.timeWindow).toEqual(testCase.range)
+      expect(timeline.timeWindowDuration).toBe(testCase.expectedTimeWindow)
+    })
   })
 })

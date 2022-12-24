@@ -13,7 +13,7 @@ export class UnknownScaleException extends Error {
 
 export class Timeline {
   items: Map<string | number, TimelineItem> = new Map()
-  options: Options;
+  options: Options
   timeWindowDuration: number
   addItem: (item: Item) => void
 
@@ -58,11 +58,12 @@ export class Timeline {
   setTimeWindow(range: Range) {
     const { start, end } = range
     this.options.timeWindow = { start, end }
+    this.timeWindowDuration = end - start
     this.calculate()
   }
 
   static UNITS_IN_MILLISECONDS = {
-    seconds:1000,
+    seconds: 1000,
     minutes: 60_000,
     hours: 3_600_000,
     days: 86_400_000,
@@ -80,7 +81,7 @@ export class Timeline {
 
   getRangeTimestamps(scale: TickScale) {
     const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
-    let offsetStart = this.options.timeWindow.start - (rangeSpan / 2)
+    let offsetStart = this.options.timeWindow.start - rangeSpan / 2
 
     switch (scale) {
       case 'seconds':
@@ -96,21 +97,20 @@ export class Timeline {
         offsetStart = new Date(offsetStart).setUTCHours(0, 0, 0)
         break
       default:
-        throw new UnknownScaleException() 
+        throw new UnknownScaleException()
     }
 
     const offsetEnd = offsetStart + rangeSpan * 1.5
     const interval = Timeline.UNITS_IN_MILLISECONDS[scale]
-     // Note: ticksRange always will be x2 the timeline timespan.
-     // This is intentional, since it is expected to obtain an offset
-     // of the start and end date in order to be able to respond to dates
-     // that are not yet visible.
+    // Note: ticksRange always will be x2 the timeline timespan.
+    // This is intentional, since it is expected to obtain an offset
+    // of the start and end date in order to be able to respond to dates
+    // that are not yet visible.
     const offsetRange = { start: offsetStart, end: offsetEnd }
 
-    return Timeline.getDatesInRangeByInterval(offsetRange, interval)
-      .map((date) => ({
-        timestamp: date,
-        offsetStart: date - this.options.timeWindow.start,
-      }))
+    return Timeline.getDatesInRangeByInterval(offsetRange, interval).map((date) => ({
+      timestamp: date,
+      offsetStart: date - this.options.timeWindow.start,
+    }))
   }
 }
