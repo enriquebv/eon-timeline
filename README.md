@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  virtual-headless-timeline
+  eon-timeline
   <br>
 </h1>
 
@@ -86,8 +86,8 @@
 - [ ] Implement DOM layer:
   - [x] `ResizeObserver` to support responsive.
   - [x] Pan gesture support; will move to future or past using current timeline range.
-  - [ ] Add unit tests to DOM layer.
   - [ ] Scroll gesture support; will modify current timeline range.
+  - [ ] Add unit tests to DOM layer.
 - [ ] Refactor code to simplify API.
 - [ ] Create pre-built React component.
 - [ ] Create pre-built Vue component.
