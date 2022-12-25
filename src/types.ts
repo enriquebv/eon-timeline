@@ -8,4 +8,4 @@ export interface Item {
   ocurrence: Range
 }
 
-export type TickScale = 'seconds' | 'minutes' | 'hours' | 'days' | 'months'
+export type TickScale = 'seconds' | 'minutes' | 'hours' | 'days'
