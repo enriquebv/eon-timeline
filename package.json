@@ -1,5 +1,5 @@
 {
-  "name": "virtual-headless-timeline",
+  "name": "eon-timeline",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,6 +28,6 @@
     "/dist"
   ],
   "repository": {
-    "url": "https://github.com/enriquebv/virtual-headless-timeline"
+    "url": "https://github.com/enriquebv/eon-timeline"
   }
 }
