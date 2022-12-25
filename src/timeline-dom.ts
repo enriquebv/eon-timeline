@@ -1,5 +1,5 @@
 import type Timeline from './index'
-import type { Item, Range } from './types'
+import type { Item, Range, TickScale } from './types'
 
 import Hammer, { DIRECTION_HORIZONTAL } from 'hammerjs'
 
@@ -16,6 +16,18 @@ export interface TimelineDOMItem {
   startOffsetPx: number
 }
 
+export class MissingContainer extends Error {
+  constructor() {
+    super('Container is needed to use TimelineDOM.')
+  }
+}
+
+export class MissingOnRenderFunction extends Error {
+  constructor() {
+    super('onRender is needed to use TimelineDOM.')
+  }
+}
+
 export default class TimelineDOM {
   private container: HTMLElement
   private timelines: Timeline[]
@@ -26,6 +38,9 @@ export default class TimelineDOM {
   private isPaning: boolean = false
 
   constructor(options: TimelineDOMOptions) {
+    if (!options.container) throw new MissingContainer()
+    if (!options.onRender) throw new MissingOnRenderFunction()
+
     this.container = options.container
     this.timelines = options.timelines
     this.renderCallback = options.onRender
@@ -139,7 +154,7 @@ export default class TimelineDOM {
     this.renderCallback(result)
   }
 
-  getRangeTimestamps(scale: 'seconds' | 'minutes' | 'hours' | 'days' | 'months') {
+  getRangeTimestamps(scale: TickScale) {
     const timestamps = this.timelines[0].getRangeTimestamps(scale)
 
     const domRangeTimestamps = timestamps.map(({ timestamp, offsetStart }) => {
@@ -157,7 +172,11 @@ export default class TimelineDOM {
     }
   }
 
-  static getItemStyleFromDomItem(item: TimelineDOMItem) {
+  static getItemStyleFromDomItem(item: TimelineDOMItem): {
+    position: 'absolute'
+    left: `${number}px`
+    width: `${number}px`
+  } {
     return {
       position: 'absolute',
       left: `${item.startOffsetPx}px`,
