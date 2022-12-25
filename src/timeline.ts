@@ -1,27 +1,28 @@
 import type { Item, Range, TickScale } from './types'
 import { TimelineItem } from './timeline-item'
 
-interface Options {
-  timeWindow: Range
-}
-
-export class UnknownScaleException extends Error {
+export class UnknownScale extends Error {
   constructor() {
     super('Unknown scale, please use one of type TickScale.')
   }
 }
 
+export class MissingRange extends Error {
+  constructor() {
+    super('Missing range using Timeline.')
+  }
+}
+
 export class Timeline {
   items: Map<string | number, TimelineItem> = new Map()
-  options: Options
-  timeWindowDuration: number
+  range?: Range
+  timespan?: number
   addItem: (item: Item) => void
 
-  constructor(options: { items: Item[]; range: Range }) {
-    this.timeWindowDuration = options.range.end - options.range.start
-
-    this.options = {
-      timeWindow: { ...options.range },
+  constructor(options: { items: Item[]; range?: Range }) {
+    if (options.range) {
+      this.range = { start: options.range.start, end: options.range.end }
+      this.timespan = options.range.end - options.range.start
     }
 
     for (const item of options.items) {
@@ -42,8 +43,10 @@ export class Timeline {
   }
 
   calculate() {
+    if (!this.range) throw new MissingRange()
+
     for (let [, item] of this.items) {
-      item.computeStatusFromRange(this.options.timeWindow)
+      item.computeStatusFromRange(this.range)
     }
 
     return this
@@ -57,8 +60,8 @@ export class Timeline {
 
   setTimeWindow(range: Range) {
     const { start, end } = range
-    this.options.timeWindow = { start, end }
-    this.timeWindowDuration = end - start
+    this.range = { start, end }
+    this.timespan = end - start
     this.calculate()
   }
 
@@ -80,8 +83,10 @@ export class Timeline {
   }
 
   getRangeTimestamps(scale: TickScale) {
-    const rangeSpan = this.options.timeWindow.end - this.options.timeWindow.start
-    let offsetStart = this.options.timeWindow.start - rangeSpan / 2
+    if (!this.range) throw new MissingRange()
+
+    const rangeSpan = this.range.end - this.range.start
+    let offsetStart = this.range.start - rangeSpan / 2
 
     switch (scale) {
       case 'seconds':
@@ -97,7 +102,7 @@ export class Timeline {
         offsetStart = new Date(offsetStart).setUTCHours(0, 0, 0)
         break
       default:
-        throw new UnknownScaleException()
+        throw new UnknownScale()
     }
 
     const offsetEnd = offsetStart + rangeSpan * 1.5
@@ -110,7 +115,7 @@ export class Timeline {
 
     return Timeline.getDatesInRangeByInterval(offsetRange, interval).map((date) => ({
       timestamp: date,
-      offsetStart: date - this.options.timeWindow.start,
+      offsetStart: date - (this.range?.start as number),
     }))
   }
 }

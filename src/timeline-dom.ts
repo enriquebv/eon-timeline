@@ -1,9 +1,10 @@
-import type Timeline from './index'
+import Timeline from './index'
 import type { Item, Range, TickScale } from './types'
 
 import Hammer, { DIRECTION_HORIZONTAL } from 'hammerjs'
 
 export interface TimelineDOMOptions {
+  range: Range
   container: HTMLElement
   timelines: Timeline[]
   onRender(items: TimelineDOMItem[][]): void
@@ -42,7 +43,10 @@ export default class TimelineDOM {
     if (!options.onRender) throw new MissingOnRenderFunction()
 
     this.container = options.container
-    this.timelines = options.timelines
+    this.timelines = options.timelines.map((timeline) => {
+      timeline.setTimeWindow(options.range)
+      return timeline
+    })
     this.renderCallback = options.onRender
     this.ResizeObserver = options.customResizeObserver ?? window.ResizeObserver
 
@@ -84,7 +88,7 @@ export default class TimelineDOM {
         // Note: Timelines are sync in same DOM context, so we use first
         // to get milliseconds per pixel value
         const [firstTimeline] = this.timelines
-        this.msPerPx = firstTimeline.timeWindowDuration / currentWidth
+        this.msPerPx = (firstTimeline.timespan as number) / currentWidth
 
         this.emitRenderCallback()
       }
@@ -97,7 +101,7 @@ export default class TimelineDOM {
     this.isPaning = true
     const [firstTimeline] = this.timelines
 
-    this.previousTimelineStartReference = firstTimeline.options.timeWindow.start
+    this.previousTimelineStartReference = firstTimeline.range?.start as number
   }
 
   private onPan(pixelsMoved: number) {
@@ -105,7 +109,7 @@ export default class TimelineDOM {
       if (!this.isPaning) return
 
       const { previousTimelineStartReference: timelineStartAtPanStart, msPerPx, timelines: timeline } = this
-      const timelineDuration = timeline[0].timeWindowDuration
+      const timelineDuration = timeline[0].timespan as number
 
       const deltaMsFromStart = (msPerPx as number) * pixelsMoved
 
@@ -130,7 +134,7 @@ export default class TimelineDOM {
     const result: TimelineDOMItem[][] = []
 
     for (const timeline of this.timelines) {
-      const timelineStart = timeline.options.timeWindow.start
+      const timelineStart = timeline.range?.start as number
 
       const timelineResult: TimelineDOMItem[] = []
 

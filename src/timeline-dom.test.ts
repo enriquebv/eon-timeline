@@ -22,16 +22,15 @@ window.ResizeObserver = ResizeObserverMock
 describe('TimelineDOM', () => {
   let timelineDom: TimelineDOM
   let container: HTMLDivElement
+  const range: Range = {
+    start: Date.now(),
+    end: Date.now() + 3_600_000,
+  }
 
   beforeEach(() => {
-    const HOUR_IN_MILLISECONDS = 3_600_000
-    const TIMELINE_RANGE: Range = {
-      start: Date.now(),
-      end: Date.now() + HOUR_IN_MILLISECONDS,
-    }
-
     container = document.createElement('div')
     timelineDom = new TimelineDOM({
+      range,
       container,
       timelines: [
         new Timeline({
@@ -44,7 +43,6 @@ describe('TimelineDOM', () => {
               },
             },
           ],
-          range: TIMELINE_RANGE,
         }),
       ],
       onRender: () => {},
@@ -53,6 +51,7 @@ describe('TimelineDOM', () => {
 
   it('Fails if not element is provided', () => {
     const options: TimelineDOMOptions = {
+      range,
       container: undefined as unknown as HTMLElement,
       timelines: [],
       onRender: () => undefined,
@@ -63,6 +62,7 @@ describe('TimelineDOM', () => {
 
   it('Fails if not element is provided', () => {
     const options: TimelineDOMOptions = {
+      range,
       container,
       timelines: [],
       onRender: undefined as unknown as () => void,

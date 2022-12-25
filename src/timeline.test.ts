@@ -1,4 +1,4 @@
-import { Timeline, UnknownScaleException } from './timeline'
+import { Timeline, UnknownScale } from './timeline'
 import { Range, TickScale } from './types'
 
 describe('Timeline', () => {
@@ -103,8 +103,8 @@ describe('Timeline', () => {
       end,
     })
 
-    expect(timeline.options.timeWindow.start).toBe(start)
-    expect(timeline.options.timeWindow.end).toBe(end)
+    expect(timeline.range?.start).toBe(start)
+    expect(timeline.range?.end).toBe(end)
   })
 
   test('getItemsInRange returns an array of items', () => {
@@ -131,7 +131,7 @@ describe('Timeline', () => {
   test('.getRangeTicks throws UnknownTickScaleException if scale is unknown', () => {
     const { timeline } = getDefaults()
 
-    expect(() => timeline.getRangeTimestamps('years' as TickScale)).toThrow(UnknownScaleException)
+    expect(() => timeline.getRangeTimestamps('years' as TickScale)).toThrow(UnknownScale)
   })
 
   test('.setTimeWindow method modifies internal values', () => {
@@ -155,8 +155,8 @@ describe('Timeline', () => {
 
     TEST_CASES.forEach((testCase) => {
       timeline.setTimeWindow(testCase.range)
-      expect(timeline.options.timeWindow).toEqual(testCase.range)
-      expect(timeline.timeWindowDuration).toBe(testCase.expectedTimeWindow)
+      expect(timeline.range).toEqual(testCase.range)
+      expect(timeline.timespan).toBe(testCase.expectedTimeWindow)
     })
   })
 })
