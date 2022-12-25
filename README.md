@@ -72,7 +72,7 @@
 
 ## Roadmap
 
-### First release (v1.0.0)
+### v1.0.0
 
 - [x] Implement timeline manager:
   - [x] Basic range and calc orchestration.
@@ -83,17 +83,26 @@
 - [x] Create timeline item entity
   - [x] Added basic range offets calculation
   - [x] Added unit tests
-- [ ] Implement DOM layer:
+- [x] Implement DOM layer:
   - [x] `ResizeObserver` to support responsive.
   - [x] Pan gesture support; will move to future or past using current timeline range.
-  - [ ] Scroll gesture support; will modify current timeline range.
-  - [ ] Add unit tests to DOM layer.
+  - [x] Add unit tests to DOM layer.
+- [ ] Events
+  - [ ] On scroll event
+  - [ ] On scroll end event
 - [ ] Refactor code to simplify API.
 - [ ] Create pre-built React component.
 - [ ] Create pre-built Vue component.
+- [ ] Create pre-built Svelte component.
 - [ ] Create demo pages.
 - [ ] Enhance current README with basic examples.
 - [ ] Create `API.md` file with explained library API.
+
+### v1.1.0
+
+- [ ] Scroll gesture support; will modify current timeline range.
+- [ ] Create canvas implementation.
+- [ ] SSR support.
 
 ## Credits
 
