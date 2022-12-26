@@ -1,5 +1,11 @@
 import type { Range, Item } from './types'
 
+export class InvalidOcurrenceRange extends Error {
+  constructor() {
+    super("Invalid item ocurrence range, start can't be later than end.")
+  }
+}
+
 export class TimelineItem {
   itemReference: Item
   start: number
@@ -19,6 +25,8 @@ export class TimelineItem {
   }
 
   constructor(item: Item) {
+    if (item.ocurrence.end < item.ocurrence.start) throw new InvalidOcurrenceRange()
+
     this.itemReference = item
     this.start = item.ocurrence.start
     this.end = item.ocurrence.end

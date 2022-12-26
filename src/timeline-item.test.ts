@@ -1,4 +1,4 @@
-import { TimelineItem } from './timeline-item'
+import { InvalidOcurrenceRange, TimelineItem } from './timeline-item'
 
 import type { Item, Range } from './types'
 
@@ -24,6 +24,12 @@ describe('TimelineDatasetItem', () => {
       datasetItem: new TimelineItem(item),
     }
   }
+
+  test('Create a item with invalid range will emit exception InvalidOcurrenceRange', () => {
+    const invalidRange: Range = { start: 400, end: 200 }
+
+    expect(() => new TimelineItem({ id: 1, ocurrence: invalidRange })).toThrow(InvalidOcurrenceRange)
+  })
 
   test('Property itemReference is reference to argument in constructor', () => {
     const { item, datasetItem } = getDefaults()
