@@ -49,7 +49,7 @@ describe('TimelineDOM', () => {
     })
   })
 
-  it('Fails if not element is provided', () => {
+  test('Fails if not element is provided', () => {
     const options: TimelineDOMOptions = {
       range,
       container: undefined as unknown as HTMLElement,
@@ -60,7 +60,7 @@ describe('TimelineDOM', () => {
     expect(() => new TimelineDOM(options)).toThrow(MissingContainer)
   })
 
-  it('Fails if not element is provided', () => {
+  test('Fails if not element is provided', () => {
     const options: TimelineDOMOptions = {
       range,
       container,
@@ -71,7 +71,7 @@ describe('TimelineDOM', () => {
     expect(() => new TimelineDOM(options)).toThrow(MissingOnRenderFunction)
   })
 
-  it('Callback .onRender correctly triggered', () => {
+  test('Callback .onRender correctly triggered', () => {
     const untypedTimelinedom = timelineDom as any
     untypedTimelinedom.renderCallback = jest.fn(() => {})
 
@@ -86,14 +86,14 @@ describe('TimelineDOM', () => {
     expect(untypedTimelinedom.renderCallback).toBeCalledTimes(4)
   })
 
-  it('Store shared range and computes correctly timestamp', () => {
+  test('Store shared range and computes correctly timestamp', () => {
     timelineDom.setRange({ start: 100, end: 200 })
 
     expect((timelineDom as any).sharedRange).toEqual({ start: 100, end: 200 })
     expect((timelineDom as any).sharedTimespan).toEqual(100)
   })
 
-  it('Correctly build item styles', () => {
+  test('Correctly build item styles', () => {
     const item: TimelineDOMItem = {
       startOffsetPx: 1000,
       width: 200,
@@ -113,7 +113,7 @@ describe('TimelineDOM', () => {
     })
   })
 
-  it('Method .getRangeTimestamps returns expected data structure', () => {
+  test('Method .getRangeTimestamps returns expected data structure', () => {
     const scales: TickScale[] = ['seconds', 'minutes', 'hours', 'days']
 
     scales.forEach((scale) => {
