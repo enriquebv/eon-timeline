@@ -1,114 +1,70 @@
-import { useLayoutEffect, useRef, useState } from 'react'
-import Timeline, { TickScale, TimelineDOM } from '../../../dist/index.js'
+import { useEffect, useState } from 'react'
+import Timeline, { Range, TickScale } from '../../../dist'
+import EonTimeline from '../../../dist/react'
 import makeExampleItems, { EventsExampleOptions } from '../../utils/example-data'
 import './index.css'
+import '../../../dist/styles.css'
 
 interface ExampleProps {
   scale: TickScale
   timeWindowDuration: number
-  title: string,
+  title: string
   eventsExampleOptions: EventsExampleOptions
 }
 
+type ExampleRangeScale = 'minute' | 'hour' | 'day' | 'week' | 'month'
+
 export default function ExampleTimelineDay(props: ExampleProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null)
-  const [timelineDoms, setTimlineDoms] = useState<any[]>([])
-  const [ticks, setTicks] = useState<any[]>([])
-
-  function formatDate(timestamp: number): string {
-    const date = new Date(timestamp)
-
-    const isMonth = props.timeWindowDuration === 30 * 24 * 60 * 60 * 1000
-
-    if (props.scale === 'days' && isMonth && date.getUTCDate() === 1) {
-      return date.toLocaleDateString()
-    }
-
-    if (props.scale === 'days' && !isMonth) {
-      return date.toLocaleDateString()
-    }
-
-    if (props.scale === 'hours' && date.getUTCHours() % 5 === 0) {
-      return date.toLocaleTimeString()
-    }
-
-    if (props.scale === 'minutes' && date.getUTCMinutes() % 15 === 0) {
-      return date.toLocaleTimeString()
-    }
-
-    return ''
+  const now = Date.now()
+  const RANGE_PER_SCALE: Record<ExampleRangeScale, Range> = {
+    minute: { start: now, end: now + 6000 },
+    hour: { start: now, end: now + 3_600_000 },
+    day: { start: now, end: now + 86_400_000 },
+    week: { start: now, end: now + 604_800_000 },
+    month: { start: now, end: now + 2_592_000_000 },
   }
 
-  function setupTimeline() {
-    const now = Date.now()
-    const range = {
-      start: now,
-      end: now + props.timeWindowDuration
+  const [timelines, setTimelines] = useState<Timeline[]>()
+  const [rangeScale, setRangeScale] = useState<ExampleRangeScale>('hour')
+
+  function setupTimelines() {
+    function makeTimeline() {
+      return makeExampleItems({
+        gapRangeInMinutes: {
+          min: 10,
+          max: 120,
+        },
+        durationRangeInMinutes: {
+          min: 2,
+          max: 5,
+        },
+      })
     }
 
-    if (!containerRef.current) {
-      throw new Error('Container is not ready yet.')
-    }
+    const timelines: Timeline[] = Array(5)
+      .fill(null)
+      .map(() => new Timeline({ items: makeTimeline() }))
 
-    
-    const container = containerRef.current
-    const timelines = [
-      new Timeline({
-        items: makeExampleItems(props.eventsExampleOptions),
-        range,
-      }),
-      new Timeline({
-        items: makeExampleItems(props.eventsExampleOptions),
-        range,
-      }),
-      new Timeline({
-        items: makeExampleItems(props.eventsExampleOptions),
-        range,
-      }),
-      new Timeline({
-        items: makeExampleItems(props.eventsExampleOptions),
-        range,
-      }),
-      new Timeline({
-        items: makeExampleItems(props.eventsExampleOptions),
-        range,
-      }),
-    ]
-    const onRender = (domItems: any[]) => {
-      setTimlineDoms(() => domItems)
-      setTicks(timelineDom.getRangeTimestamps(props.scale))
-    }
-
-    const timelineDom = new TimelineDOM({ container, timelines, onRender })
+    setTimelines(timelines)
   }
 
-  useLayoutEffect(setupTimeline, [])
+  useEffect(setupTimelines, [])
+
+  const range: Range = RANGE_PER_SCALE[rangeScale]
 
   return (
     <div className='example'>
       <h3>{props.title}</h3>
 
-      <div style={{ position: 'relative', overflow: 'hidden', height: '16px' }}>
-        {ticks.map((t) => (
-          <span style={{ position: 'absolute', left: `${t.left}px`, fontSize: '10px' }}>
-            {formatDate(t.timestamp)}
-          </span>
-        ))}
+      <div className='time-actions'>
+        <button onClick={() => setRangeScale('minute')}>1 minute</button>
+        <button onClick={() => setRangeScale('hour')}>1 hour</button>
+        <button onClick={() => setRangeScale('day')}>1 day</button>
+        <button onClick={() => setRangeScale('week')}>1 week</button>
+        <button onClick={() => setRangeScale('month')}>30 days</button>
       </div>
-      <div className='demo-timeline-container' ref={containerRef}>
-        {timelineDoms.length > 0
-          ? timelineDoms.map((t, i) => (
-              <div key={i} className='demo-timeline' style={TimelineDOM.getTimelineStyle() as any}>
-                {t.map((item: any) => (
-                  <div key={item.item.id} style={TimelineDOM.getItemStyleFromDomItem(item) as any}>
-                    <div className='demo-timeline-item'>#{item.item.id}</div>
-                  </div>
-                ))}
-              </div>
-            ))
-          : null}
-      </div>
-      
+
+      {timelines ? <EonTimeline range={range} timelines={timelines} /> : null}
     </div>
   )
 }
