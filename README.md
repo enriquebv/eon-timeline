@@ -62,10 +62,10 @@
 
    ```bash
    # With yarn
-   yarn add virtual-headless-timeline
+   yarn add eon-timeline
 
    # or with npm
-   npm i virtual-headless-timeline
+   npm i eon-timeline
    ```
 
 > // TODO: When library have version 1.0.0, create basic example.
