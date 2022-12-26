@@ -39,6 +39,7 @@ export default class TimelineDOM {
   private isPaning: boolean = false
   private sharedTimespan: number
   private sharedRange: Range
+  redraw: () => void
 
   constructor(options: TimelineDOMOptions) {
     if (!options.container) throw new MissingContainer()
@@ -58,6 +59,7 @@ export default class TimelineDOM {
     this.setupPanEvents()
     this.setupResizeEvents()
     this.timelines.forEach((timeline) => timeline.calculate())
+    this.redraw = this.emitRenderCallback.bind(this)
   }
 
   setRange(range: Range) {
@@ -74,8 +76,6 @@ export default class TimelineDOM {
     const width = this.container.getBoundingClientRect().width
 
     this.millisecondsPerPixel = this.sharedTimespan / width
-
-    debugger
   }
 
   private setupPanEvents() {
