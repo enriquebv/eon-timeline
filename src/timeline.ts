@@ -35,7 +35,10 @@ export class Timeline {
   }
 
   updateItem(item: Item) {
-    this.items.set(item.id, new TimelineItem(item))
+    const timelineItem = new TimelineItem(item)
+    this.items.set(item.id, timelineItem)
+
+    timelineItem.computeStatusFromRange(this.range as Range)
   }
 
   removeItem(id: string | number) {
