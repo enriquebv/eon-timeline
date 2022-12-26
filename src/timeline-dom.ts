@@ -134,10 +134,12 @@ export default class TimelineDOM {
 
       const nextStart = (previousTimelineStartReference as number) + deltaMsFromStart
       const nextEnd = nextStart + timelineDuration
-      const nextTimeWindow: Range = { start: nextStart, end: nextEnd }
+      const nextRange: Range = { start: nextStart, end: nextEnd }
+
+      this.sharedRange = nextRange
 
       for (const timeline of this.timelines) {
-        timeline.setRange(nextTimeWindow)
+        timeline.setRange(nextRange)
       }
 
       this.emitRenderCallback()
