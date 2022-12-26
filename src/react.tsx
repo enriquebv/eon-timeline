@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Timeline } from './timeline'
 import TimelineDOM, { TimelineDOMItem } from './timeline-dom'
 import { Range } from './types'
@@ -32,6 +32,10 @@ export default function EonTimeline(props: Props) {
       onRender,
     })
   }, [])
+
+  useEffect(() => {
+    timelineDom.current?.setRange(props.range)
+  }, [props.range])
 
   const TimelineComponent = props.TimelineComponent as unknown as React.ElementType
   const ItemComponent = props.ItemComponent as unknown as React.ElementType

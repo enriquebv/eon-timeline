@@ -58,7 +58,7 @@ export class Timeline {
     return result
   }
 
-  setTimeWindow(range: Range) {
+  setRange(range: Range) {
     const { start, end } = range
     this.range = { start, end }
     this.timespan = end - start

@@ -98,7 +98,7 @@ describe('Timeline', () => {
     const start = Date.now()
     const end = Date.now() + 86_400_000
 
-    timeline.setTimeWindow({
+    timeline.setRange({
       start,
       end,
     })
@@ -134,7 +134,7 @@ describe('Timeline', () => {
     expect(() => timeline.getRangeTimestamps('years' as TickScale)).toThrow(UnknownScale)
   })
 
-  test('.setTimeWindow method modifies internal values', () => {
+  test('.setRange method modifies internal values', () => {
     const { timeline } = getDefaults()
     const TEST_CASES = [
       {
@@ -154,7 +154,7 @@ describe('Timeline', () => {
     ]
 
     TEST_CASES.forEach((testCase) => {
-      timeline.setTimeWindow(testCase.range)
+      timeline.setRange(testCase.range)
       expect(timeline.range).toEqual(testCase.range)
       expect(timeline.timespan).toBe(testCase.expectedTimeWindow)
     })
