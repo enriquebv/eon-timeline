@@ -49,12 +49,12 @@ export default function ExampleTimelineDay(props: ExampleProps) {
   function addRandomItem() {
     const randomTimelineIndex = Math.floor(Math.random() * TIMELINES.length)
     const timeline = TIMELINES[randomTimelineIndex]
+    const now = Date.now()
+    const start = now + 1000 * 60 * Math.floor(Math.random() * 10)
+    const end = start + 1000 * 60 * Math.floor(Math.random() * 30)
     const item = {
-      id: Date.now(),
-      ocurrence: {
-        start: Date.now() + 1000 * 60 * Math.floor(Math.random() * 10),
-        end: Date.now() + 1000 * 60 * Math.floor(Math.random() * 30),
-      },
+      id: now,
+      ocurrence: { start, end },
     }
 
     timeline.addItem(item)
