@@ -1,9 +1,9 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
 import { Timeline } from './timeline'
 import TimelineDOM, { TimelineDOMItem } from './timeline-dom'
 import { Range } from './types'
 
-interface Props {
+export interface EonTimelineProps {
   timelines: Timeline[]
   range: Range
   className?: string
@@ -13,7 +13,11 @@ interface Props {
   ItemComponent?: React.ReactNode
 }
 
-export default function EonTimeline(props: Props) {
+export interface EonTimelineRef {
+  redraw(): void
+}
+
+const EonTimeline = React.forwardRef<EonTimelineRef, EonTimelineProps>((props, ref) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const timelineDom = useRef<TimelineDOM | null>(null)
   const [domTimelines, setDomTimelines] = useState<TimelineDOMItem[][]>([])
@@ -21,6 +25,12 @@ export default function EonTimeline(props: Props) {
   function onRender(domTimelines: TimelineDOMItem[][]) {
     setDomTimelines(domTimelines)
   }
+
+  useImperativeHandle(ref, () => ({
+    redraw() {
+      timelineDom.current?.redraw()
+    },
+  }))
 
   useLayoutEffect(() => {
     if (containerRef.current === null) return
@@ -69,4 +79,6 @@ export default function EonTimeline(props: Props) {
       )}
     </div>
   )
-}
+})
+
+export default EonTimeline
