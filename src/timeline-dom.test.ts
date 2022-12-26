@@ -86,6 +86,13 @@ describe('TimelineDOM', () => {
     expect(untypedTimelinedom.renderCallback).toBeCalledTimes(4)
   })
 
+  it('Store shared range and computes correctly timestamp', () => {
+    timelineDom.setRange({ start: 100, end: 200 })
+
+    expect((timelineDom as any).sharedRange).toEqual({ start: 100, end: 200 })
+    expect((timelineDom as any).sharedTimespan).toEqual(100)
+  })
+
   it('Correctly build item styles', () => {
     const item: TimelineDOMItem = {
       startOffsetPx: 1000,

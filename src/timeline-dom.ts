@@ -34,25 +34,48 @@ export default class TimelineDOM {
   private timelines: Timeline[]
   private renderCallback: (items: TimelineDOMItem[][]) => void
   private ResizeObserver: any
-  private msPerPx: number | null = null
+  private millisecondsPerPixel: number | null = null
   private previousTimelineStartReference: number | null = null
   private isPaning: boolean = false
+  private sharedTimespan: number
+  private sharedRange: Range
 
   constructor(options: TimelineDOMOptions) {
     if (!options.container) throw new MissingContainer()
     if (!options.onRender) throw new MissingOnRenderFunction()
 
+    this.sharedRange = { start: options.range.start, end: options.range.end }
+    this.sharedTimespan = options.range.end - options.range.start
     this.container = options.container
     this.timelines = options.timelines.map((timeline) => {
-      timeline.setTimeWindow(options.range)
+      timeline.setRange(options.range)
       return timeline
     })
     this.renderCallback = options.onRender
     this.ResizeObserver = options.customResizeObserver ?? window.ResizeObserver
 
+    this.computeMillisecondsPerPixel()
     this.setupPanEvents()
     this.setupResizeEvents()
     this.timelines.forEach((timeline) => timeline.calculate())
+  }
+
+  setRange(range: Range) {
+    this.timelines.forEach((timeline) => timeline.setRange(range))
+
+    this.sharedRange = { start: range.start, end: range.end }
+    this.sharedTimespan = range.end - range.start
+
+    this.computeMillisecondsPerPixel()
+    this.emitRenderCallback()
+  }
+
+  private computeMillisecondsPerPixel() {
+    const width = this.container.getBoundingClientRect().width
+
+    this.millisecondsPerPixel = this.sharedTimespan / width
+
+    debugger
   }
 
   private setupPanEvents() {
@@ -84,12 +107,7 @@ export default class TimelineDOM {
       const isContainer = entry.target === this.container
 
       if (isContainer) {
-        const currentWidth = entry.contentRect.width
-        // Note: Timelines are sync in same DOM context, so we use first
-        // to get milliseconds per pixel value
-        const [firstTimeline] = this.timelines
-        this.msPerPx = (firstTimeline.timespan as number) / currentWidth
-
+        this.computeMillisecondsPerPixel()
         this.emitRenderCallback()
       }
     })
@@ -99,26 +117,27 @@ export default class TimelineDOM {
 
   private onPanStart() {
     this.isPaning = true
-    const [firstTimeline] = this.timelines
 
-    this.previousTimelineStartReference = firstTimeline.range?.start as number
+    this.previousTimelineStartReference = this.sharedRange.start
   }
 
   private onPan(pixelsMoved: number) {
+    if (this.millisecondsPerPixel === null) throw new Error('es null')
+
     window.requestAnimationFrame(() => {
       if (!this.isPaning) return
 
-      const { previousTimelineStartReference: timelineStartAtPanStart, msPerPx, timelines: timeline } = this
-      const timelineDuration = timeline[0].timespan as number
+      const { previousTimelineStartReference, millisecondsPerPixel, sharedTimespan } = this
+      const timelineDuration = sharedTimespan
 
-      const deltaMsFromStart = (msPerPx as number) * pixelsMoved
+      const deltaMsFromStart = (millisecondsPerPixel as number) * pixelsMoved
 
-      const nextStart = (timelineStartAtPanStart as number) + deltaMsFromStart
+      const nextStart = (previousTimelineStartReference as number) + deltaMsFromStart
       const nextEnd = nextStart + timelineDuration
       const nextTimeWindow: Range = { start: nextStart, end: nextEnd }
 
       for (const timeline of this.timelines) {
-        timeline.setTimeWindow(nextTimeWindow)
+        timeline.setRange(nextTimeWindow)
       }
 
       this.emitRenderCallback()
@@ -142,8 +161,8 @@ export default class TimelineDOM {
         const { itemReference, end, start } = itemInRange
         const duration = end - start
         const msFromTimelineStart = start - timelineStart
-        const width = duration / (this.msPerPx as number)
-        const startPxOffset = msFromTimelineStart / (this.msPerPx as number)
+        const width = duration / (this.millisecondsPerPixel as number)
+        const startPxOffset = msFromTimelineStart / (this.millisecondsPerPixel as number)
 
         timelineResult.push({
           width,
@@ -162,7 +181,7 @@ export default class TimelineDOM {
     const timestamps = this.timelines[0].getRangeTimestamps(scale)
 
     const domRangeTimestamps = timestamps.map(({ timestamp, offsetStart }) => {
-      const offsetFromLeft = offsetStart / (this.msPerPx || 0)
+      const offsetFromLeft = offsetStart / (this.millisecondsPerPixel || 0)
       return { timestamp, left: offsetFromLeft }
     })
 
