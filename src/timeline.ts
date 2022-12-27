@@ -13,11 +13,19 @@ export class MissingRange extends Error {
   }
 }
 
+export class ItemNotFoundWithId extends Error {
+  constructor(id: number | string) {
+    super(`Item not found with id "${id}".`)
+  }
+}
+
 export class Timeline {
   items: Map<string | number, TimelineItem> = new Map()
   range?: Range
   timespan?: number
   addItem: (item: Item) => void
+  updateItem: (item: Item) => void
+  itemsRange: Range | null = null
 
   constructor(options: { items: Item[]; range?: Range }) {
     if (options.range) {
@@ -26,23 +34,66 @@ export class Timeline {
     }
 
     for (const item of options.items) {
-      this.items.set(item.id, new TimelineItem(item))
+      this.registerItem('add', item)
     }
 
-    // Note: addItem is just an alias to updateItem method.
-    this.addItem = this.updateItem.bind(this)
+    this.addItem = this.registerItem.bind(this, 'add')
+    this.updateItem = this.registerItem.bind(this, 'update')
     this.calculate = this.calculate.bind(this)
   }
 
-  updateItem(item: Item) {
+  private registerItem(action: 'add' | 'update' = 'add', item: Item) {
+    if (action === 'update' && !this.items.has(item.id)) {
+      throw new ItemNotFoundWithId(item.id)
+    }
+
     const timelineItem = new TimelineItem(item)
     this.items.set(item.id, timelineItem)
 
-    timelineItem.computeStatusFromRange(this.range as Range)
+    if (this.range) {
+      timelineItem.computeStatusFromRange(this.range as Range)
+    }
+
+    if (this.itemsRange === null) {
+      this.itemsRange = {
+        start: item.ocurrence.start,
+        end: item.ocurrence.end,
+      }
+
+      return
+    }
+
+    this.itemsRange = {
+      start: Math.min(item.ocurrence.start, this.itemsRange.start),
+      end: Math.max(item.ocurrence.end, this.itemsRange.end),
+    }
   }
 
   removeItem(id: string | number) {
+    if (!this.items.has(id)) throw new ItemNotFoundWithId(id)
+
+    const itemsRange = this.itemsRange as Range
+    const item = this.items.get(id) as TimelineItem
+    const itemStart = item.start
+    const itemEnd = item.end
+
     this.items.delete(id)
+
+    const wasItemsRangeStart = itemStart === itemsRange.start
+    const wasItemsRangeEnd = itemEnd === itemsRange.end
+    const needToRecomputeItemsRange = wasItemsRangeStart || wasItemsRangeEnd
+
+    if (needToRecomputeItemsRange) {
+      const itemsAsArray = [...this.items.values()]
+
+      if (wasItemsRangeStart) {
+        itemsRange.start = Math.min(...itemsAsArray.map((item) => item.start))
+      }
+
+      if (wasItemsRangeEnd) {
+        itemsRange.end = Math.max(...itemsAsArray.map((item) => item.end))
+      }
+    }
   }
 
   calculate() {
@@ -51,8 +102,6 @@ export class Timeline {
     for (let [, item] of this.items) {
       item.computeStatusFromRange(this.range)
     }
-
-    return this
   }
 
   getItemsInRange() {
