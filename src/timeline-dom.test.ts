@@ -127,4 +127,62 @@ describe('TimelineDOM', () => {
       })
     })
   })
+
+  test('Each timeline added will recieve event subscriptions', () => {
+    const timeline = new Timeline({
+      items: [
+        {
+          id: 1,
+          ocurrence: {
+            start: Date.now(),
+            end: Date.now(),
+          },
+        },
+      ],
+    })
+
+    const spyEventOn = jest.spyOn(timeline, 'on')
+
+    timelineDom = new TimelineDOM({
+      range,
+      container,
+      timelines: [timeline],
+      onRender: () => {},
+    })
+
+    expect(spyEventOn).toBeCalledTimes(3)
+    expect(spyEventOn.mock.calls.some((call) => call[0] === 'item-added')).toBe(true)
+    expect(spyEventOn.mock.calls.some((call) => call[0] === 'item-updated')).toBe(true)
+    expect(spyEventOn.mock.calls.some((call) => call[0] === 'item-removed')).toBe(true)
+  })
+
+  test('.removeTimelineListeners() will unsuscribe event listeners', () => {
+    const timeline = new Timeline({
+      items: [
+        {
+          id: 1,
+          ocurrence: {
+            start: Date.now(),
+            end: Date.now(),
+          },
+        },
+      ],
+    })
+
+    timelineDom = new TimelineDOM({
+      range,
+      container,
+      timelines: [timeline],
+      onRender: () => {},
+    })
+
+    const spyEventOff = jest.spyOn(timeline, 'off')
+
+    timelineDom.removeTimelineListeners()
+
+    expect(spyEventOff).toBeCalledTimes(3)
+    expect(spyEventOff.mock.calls.some((call) => call[0] === 'item-added')).toBe(true)
+    expect(spyEventOff.mock.calls.some((call) => call[0] === 'item-updated')).toBe(true)
+    expect(spyEventOff.mock.calls.some((call) => call[0] === 'item-removed')).toBe(true)
+  })
 })

@@ -31,7 +31,7 @@ export class MissingOnRenderFunction extends Error {
 
 export default class TimelineDOM {
   private container: HTMLElement
-  private timelines: Timeline[]
+  private timelines: Timeline[] = []
   private renderCallback: (items: TimelineDOMItem[][]) => void
   private ResizeObserver: any
   private millisecondsPerPixel: number | null = null
@@ -39,6 +39,11 @@ export default class TimelineDOM {
   private isPaning: boolean = false
   private sharedTimespan: number
   private sharedRange: Range
+
+  // Note: Here will be stored event callback references to remove
+  // them from timeline instances calling .removeTimelineListeners() method.
+  // Check .addTimeline and .removeTimelineListeners() methods to check behaviour.
+  private timelineListeners: (() => void)[] = []
   redraw: () => void
 
   constructor(options: TimelineDOMOptions) {
@@ -48,18 +53,26 @@ export default class TimelineDOM {
     this.sharedRange = { start: options.range.start, end: options.range.end }
     this.sharedTimespan = options.range.end - options.range.start
     this.container = options.container
-    this.timelines = options.timelines.map((timeline) => {
-      timeline.setRange(options.range)
-      return timeline
-    })
     this.renderCallback = options.onRender
     this.ResizeObserver = options.customResizeObserver ?? window.ResizeObserver
 
+    options.timelines.forEach(this.addTimeline.bind(this))
     this.computeMillisecondsPerPixel()
     this.setupPanEvents()
     this.setupResizeEvents()
-    this.timelines.forEach((timeline) => timeline.calculate())
     this.redraw = this.emitRenderCallback.bind(this)
+  }
+
+  removeTimelineListeners() {
+    for (const [index, listener] of this.timelineListeners.entries()) {
+      this.timelines[index].off('item-added', listener)
+      this.timelines[index].off('item-updated', listener)
+      this.timelines[index].off('item-removed', listener)
+    }
+  }
+
+  onTimelineUpdate(timelineIndex: number) {
+    console.log('timeline update', timelineIndex)
   }
 
   setRange(range: Range) {
@@ -70,6 +83,27 @@ export default class TimelineDOM {
 
     this.computeMillisecondsPerPixel()
     this.emitRenderCallback()
+  }
+
+  private addTimeline(timeline: Timeline, index?: number) {
+    const timelineIndex = !index ? this.timelines.length : index
+    const onTimelineUpdate = this.onTimelineUpdate.bind(this, timelineIndex)
+
+    if (!index) {
+      this.timelines.push(timeline)
+      this.timelineListeners.push(onTimelineUpdate)
+    } else {
+      this.timelines.splice(index, 0, timeline)
+      this.timelineListeners.splice(index, 0, onTimelineUpdate)
+    }
+
+    timeline.setRange(this.sharedRange)
+
+    timeline.on('item-added', onTimelineUpdate)
+    timeline.on('item-updated', onTimelineUpdate)
+    timeline.on('item-removed', onTimelineUpdate)
+
+    timeline.calculate()
   }
 
   private computeMillisecondsPerPixel() {

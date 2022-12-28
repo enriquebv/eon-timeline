@@ -26,11 +26,17 @@ const EonTimeline = React.forwardRef<EonTimelineRef, EonTimelineProps>((props, r
     setDomTimelines(domTimelines)
   }
 
+  function onUnmount() {
+    timelineDom.current?.removeTimelineListeners()
+  }
+
   useImperativeHandle(ref, () => ({
     redraw() {
       timelineDom.current?.redraw()
     },
   }))
+
+  useEffect(() => onUnmount, [])
 
   useLayoutEffect(() => {
     if (containerRef.current === null) return
