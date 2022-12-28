@@ -1,5 +1,6 @@
 import type { Item, Range, TickScale } from './types'
 import { TimelineItem } from './timeline-item'
+import EventEmitter from './event-emitter'
 
 export class UnknownScale extends Error {
   constructor() {
@@ -19,7 +20,13 @@ export class ItemNotFoundWithId extends Error {
   }
 }
 
-export class Timeline {
+interface TimelineEvents {
+  'item-added': TimelineItem
+  'item-updated': TimelineItem
+  'item-removed': TimelineItem
+}
+
+export class Timeline extends EventEmitter<TimelineEvents> {
   items: Map<string | number, TimelineItem> = new Map()
   range?: Range
   timespan?: number
@@ -28,6 +35,8 @@ export class Timeline {
   itemsRange: Range | null = null
 
   constructor(options: { items: Item[]; range?: Range }) {
+    super()
+
     if (options.range) {
       this.range = { start: options.range.start, end: options.range.end }
       this.timespan = options.range.end - options.range.start
@@ -49,6 +58,9 @@ export class Timeline {
 
     const timelineItem = new TimelineItem(item)
     this.items.set(item.id, timelineItem)
+
+    const event: keyof TimelineEvents = action === 'add' ? 'item-added' : 'item-updated'
+    this.emit(event, timelineItem)
 
     if (this.range) {
       timelineItem.computeStatusFromRange(this.range as Range)
@@ -73,11 +85,12 @@ export class Timeline {
     if (!this.items.has(id)) throw new ItemNotFoundWithId(id)
 
     const itemsRange = this.itemsRange as Range
-    const item = this.items.get(id) as TimelineItem
-    const itemStart = item.start
-    const itemEnd = item.end
+    const timelineItem = this.items.get(id) as TimelineItem
+    const itemStart = timelineItem.start
+    const itemEnd = timelineItem.end
 
     this.items.delete(id)
+    this.emit('item-removed', timelineItem)
 
     const wasItemsRangeStart = itemStart === itemsRange.start
     const wasItemsRangeEnd = itemEnd === itemsRange.end

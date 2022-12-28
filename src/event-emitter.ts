@@ -2,11 +2,11 @@ export default class EventEmitter<Event = { string: any }> {
   private listeners: Record<string, ((payload: Event[keyof Event]) => void)[]> = {}
 
   emit<Topic extends keyof Event>(topic: Topic, payload?: Event[Topic]) {
-    const listener = this.listeners[topic as string]
+    const listeners = this.listeners[topic as string]
 
-    if (listener?.length === 0) return
+    if (!listeners || listeners.length === 0) return
 
-    listener.forEach((listener) => listener(payload as any))
+    listeners.forEach((listener) => listener(payload as any))
   }
 
   on<Topic extends keyof Event>(topic: Topic, callbackReference: (payload?: Event[Topic]) => void) {

@@ -34,7 +34,7 @@ describe('Timeline', () => {
     })
   })
 
-  test('.items property is defined and is a Map', () => {
+  test('.items property is an instance of Map', () => {
     expect(timeline.items).toBeInstanceOf(Map)
   })
 
@@ -46,18 +46,21 @@ describe('Timeline', () => {
     expect(timeline.items.get(1)).not.toBeUndefined()
   })
 
-  test('.addItem() method is defined', () => {
-    expect(timeline.addItem).not.toBeUndefined()
-  })
-
-  test('.updateItem() method is defined', () => {
-    expect(timeline.updateItem).not.toBeUndefined()
-  })
-
   test('.addItem() method correctly registers item', () => {
-    timeline.addItem(SECOND_EXAMPLE_ITEM)
+    timeline.addItem(FIRST_EXAMPLE_ITEM)
 
-    expect(timeline.items.get(2)).not.toBeUndefined()
+    expect(timeline.items.get(1)).not.toBeUndefined()
+  })
+
+  test('.addItem() method triggers "item-added" event with correct payload', () => {
+    const callback = jest.fn(() => undefined)
+
+    timeline.on('item-added', callback)
+
+    timeline.addItem(FIRST_EXAMPLE_ITEM)
+
+    expect(callback).toBeCalledTimes(1)
+    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(FIRST_EXAMPLE_ITEM)
   })
 
   test(".updateItem() method throws ItemNotFoundWithId if item don't exists in timeline.", () => {
@@ -77,6 +80,22 @@ describe('Timeline', () => {
     expect((timeline.items.get(1)?.itemReference as any).customProperty).toBe((UPDATED_ITEM as any).customProperty)
   })
 
+  test('.updateItem() method triggers "item-updated" event with correct payload', () => {
+    const UPDATED_ITEM = {
+      ...FIRST_EXAMPLE_ITEM,
+      customProperty: true,
+    }
+    const callback = jest.fn(() => undefined)
+
+    timeline.on('item-updated', callback)
+
+    timeline.addItem(FIRST_EXAMPLE_ITEM)
+    timeline.updateItem(UPDATED_ITEM)
+
+    expect(callback).toBeCalledTimes(1)
+    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(UPDATED_ITEM)
+  })
+
   test('.removeItem() is defined', () => {
     expect(timeline.removeItem).not.toBeUndefined()
   })
@@ -88,6 +107,18 @@ describe('Timeline', () => {
     timeline.removeItem(1)
 
     expect(timeline.items.get(1)).toBeUndefined()
+  })
+
+  test('.removeItem() method triggers "item-removed" event with correct payload', () => {
+    const callback = jest.fn(() => undefined)
+
+    timeline.on('item-removed', callback)
+
+    timeline.addItem(FIRST_EXAMPLE_ITEM)
+    timeline.removeItem(1)
+
+    expect(callback).toBeCalledTimes(1)
+    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(FIRST_EXAMPLE_ITEM)
   })
 
   test('.setRange() method modifies internal values', () => {
