@@ -41,12 +41,6 @@ const EonTimeline = React.forwardRef<EonTimelineRef, EonTimelineProps>((props, r
     timelineDom.current = instance
   }
 
-  function onUnmount() {
-    timelineDom.current?.removeTimelineListeners()
-  }
-
-  useEffect(() => onUnmount, [])
-
   useLayoutEffect(() => {
     if (containerRef.current === null) return
     setupTimeline()

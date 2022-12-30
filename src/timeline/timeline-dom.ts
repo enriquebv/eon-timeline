@@ -2,7 +2,7 @@ import { Timeline } from './timeline'
 import type { Item, Range } from '../types'
 
 import Hammer, { DIRECTION_HORIZONTAL } from 'hammerjs'
-import { EventEmitter } from '../event-emitter/event-emitter'
+import { EventEmitter } from './event-emitter'
 
 export interface TimelineDOMOptions {
   range: Range

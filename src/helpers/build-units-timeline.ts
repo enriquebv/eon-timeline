@@ -5,7 +5,7 @@ export type TimelineUnit = 'minute' | 'hour' | 'day'
 export interface BuildUnitTimelinesOptions {
   range: Range
   unit: TimelineUnit
-  jump?: number
+  unitScale?: number
 }
 
 const UNIT_MILLISECONDS = {
@@ -53,7 +53,7 @@ export default function buildUnitsTimeline(options: BuildUnitTimelinesOptions): 
         id: t,
         ocurrence: {
           start: t,
-          end: t + (millisecondsUnit - 1),
+          end: t + millisecondsUnit,
         },
       })
     )
