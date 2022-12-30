@@ -1,6 +1,6 @@
 import { InvalidOcurrenceRange, TimelineItem } from './timeline-item'
 
-import type { Item, Range } from './types'
+import type { Item, Range } from '../types'
 
 const RANGE: Range = {
   start: new Date('2020-01-01T00:00:00.000Z').valueOf(),

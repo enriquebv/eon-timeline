@@ -1,5 +1,5 @@
-import { ItemNotFoundWithId, Timeline, UnknownScale } from './timeline'
-import { Item, Range, TickScale } from './types'
+import { ItemNotFoundWithId, Timeline } from './timeline'
+import { Item, Range } from '../types'
 
 const DEFAULT_TIMESTAMP = 1640995200000
 const HOUR_IN_MILLISECONDS = 3_600_000
@@ -52,17 +52,6 @@ describe('Timeline', () => {
     expect(timeline.items.get(1)).not.toBeUndefined()
   })
 
-  test('.addItem() method triggers "item-added" event with correct payload', () => {
-    const callback = jest.fn(() => undefined)
-
-    timeline.on('item-added', callback)
-
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
-
-    expect(callback).toBeCalledTimes(1)
-    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(FIRST_EXAMPLE_ITEM)
-  })
-
   test(".updateItem() method throws ItemNotFoundWithId if item don't exists in timeline.", () => {
     expect(() => timeline.updateItem(FIRST_EXAMPLE_ITEM)).toThrow(ItemNotFoundWithId)
   })
@@ -80,22 +69,6 @@ describe('Timeline', () => {
     expect((timeline.items.get(1)?.itemReference as any).customProperty).toBe((UPDATED_ITEM as any).customProperty)
   })
 
-  test('.updateItem() method triggers "item-updated" event with correct payload', () => {
-    const UPDATED_ITEM = {
-      ...FIRST_EXAMPLE_ITEM,
-      customProperty: true,
-    }
-    const callback = jest.fn(() => undefined)
-
-    timeline.on('item-updated', callback)
-
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
-    timeline.updateItem(UPDATED_ITEM)
-
-    expect(callback).toBeCalledTimes(1)
-    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(UPDATED_ITEM)
-  })
-
   test('.removeItem() is defined', () => {
     expect(timeline.removeItem).not.toBeUndefined()
   })
@@ -107,18 +80,6 @@ describe('Timeline', () => {
     timeline.removeItem(1)
 
     expect(timeline.items.get(1)).toBeUndefined()
-  })
-
-  test('.removeItem() method triggers "item-removed" event with correct payload', () => {
-    const callback = jest.fn(() => undefined)
-
-    timeline.on('item-removed', callback)
-
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
-    timeline.removeItem(1)
-
-    expect(callback).toBeCalledTimes(1)
-    expect((callback.mock.calls[0] as any)[0].itemReference).toBe(FIRST_EXAMPLE_ITEM)
   })
 
   test('.setRange() method modifies internal values', () => {
@@ -134,24 +95,6 @@ describe('Timeline', () => {
 
   test('.getItemsInRange method returns an array of items', () => {
     expect(timeline.getItemsInRange()).toBeInstanceOf(Array)
-  })
-
-  test('.getRangeTicks method correctly returns list of timestamps with offset', () => {
-    const scales: TickScale[] = ['seconds', 'minutes', 'hours', 'days']
-
-    for (const scale of scales) {
-      const dates = timeline.getRangeTimestamps(scale)
-
-      expect(dates.length).toBeGreaterThan(0)
-      expect(dates[0]).toMatchObject({
-        timestamp: expect.any(Number),
-        offsetStart: expect.any(Number),
-      })
-    }
-  })
-
-  test('.getRangeTicks method throws UnknownTickScaleException if scale is unknown', () => {
-    expect(() => timeline.getRangeTimestamps('years' as TickScale)).toThrow(UnknownScale)
   })
 
   test('.itemsRange property without items is null', () => {

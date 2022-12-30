@@ -1,7 +1,8 @@
-import Timeline from './index'
-import type { Item, Range, TickScale } from './types'
+import { Timeline } from './timeline'
+import type { Item, Range } from '../types'
 
 import Hammer, { DIRECTION_HORIZONTAL } from 'hammerjs'
+import { EventEmitter } from '../event-emitter/event-emitter'
 
 export interface TimelineDOMOptions {
   range: Range
@@ -29,7 +30,7 @@ export class MissingOnRenderFunction extends Error {
   }
 }
 
-export default class TimelineDOM {
+export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
   private container: HTMLElement
   private timelines: Timeline[] = []
   private renderCallback: (items: TimelineDOMItem[][]) => void
@@ -39,14 +40,10 @@ export default class TimelineDOM {
   private isPaning: boolean = false
   private sharedTimespan: number
   private sharedRange: Range
-
-  // Note: Here will be stored event callback references to remove
-  // them from timeline instances calling .removeTimelineListeners() method.
-  // Check .addTimeline and .removeTimelineListeners() methods to check behaviour.
-  private timelineListeners: (() => void)[] = []
   redraw: () => void
 
   constructor(options: TimelineDOMOptions) {
+    super()
     if (!options.container) throw new MissingContainer()
     if (!options.onRender) throw new MissingOnRenderFunction()
 
@@ -63,18 +60,6 @@ export default class TimelineDOM {
     this.redraw = this.emitRenderCallback.bind(this)
   }
 
-  removeTimelineListeners() {
-    for (const [index, listener] of this.timelineListeners.entries()) {
-      this.timelines[index].off('item-added', listener)
-      this.timelines[index].off('item-updated', listener)
-      this.timelines[index].off('item-removed', listener)
-    }
-  }
-
-  onTimelineUpdate(timelineIndex: number) {
-    console.log('timeline update', timelineIndex)
-  }
-
   setRange(range: Range) {
     this.timelines.forEach((timeline) => timeline.setRange(range))
 
@@ -86,22 +71,13 @@ export default class TimelineDOM {
   }
 
   private addTimeline(timeline: Timeline, index?: number) {
-    const timelineIndex = !index ? this.timelines.length : index
-    const onTimelineUpdate = this.onTimelineUpdate.bind(this, timelineIndex)
-
     if (!index) {
       this.timelines.push(timeline)
-      this.timelineListeners.push(onTimelineUpdate)
     } else {
       this.timelines.splice(index, 0, timeline)
-      this.timelineListeners.splice(index, 0, onTimelineUpdate)
     }
 
     timeline.setRange(this.sharedRange)
-
-    timeline.on('item-added', onTimelineUpdate)
-    timeline.on('item-updated', onTimelineUpdate)
-    timeline.on('item-removed', onTimelineUpdate)
 
     timeline.calculate()
   }
@@ -166,17 +142,11 @@ export default class TimelineDOM {
 
       const deltaMsFromStart = (millisecondsPerPixel as number) * pixelsMoved
 
-      const nextStart = (previousTimelineStartReference as number) + deltaMsFromStart
-      const nextEnd = nextStart + timelineDuration
+      const nextStart = Math.floor((previousTimelineStartReference as number) + deltaMsFromStart)
+      const nextEnd = Math.floor(nextStart + timelineDuration)
       const nextRange: Range = { start: nextStart, end: nextEnd }
 
-      this.sharedRange = nextRange
-
-      for (const timeline of this.timelines) {
-        timeline.setRange(nextRange)
-      }
-
-      this.emitRenderCallback()
+      this.emit('range-change', nextRange)
     })
   }
 
@@ -211,24 +181,6 @@ export default class TimelineDOM {
     }
 
     this.renderCallback(result)
-  }
-
-  getRangeTimestamps(scale: TickScale) {
-    const timestamps = this.timelines[0].getRangeTimestamps(scale)
-
-    const domRangeTimestamps = timestamps.map(({ timestamp, offsetStart }) => {
-      const offsetFromLeft = offsetStart / (this.millisecondsPerPixel || 0)
-      return { timestamp, left: offsetFromLeft }
-    })
-
-    return domRangeTimestamps
-  }
-
-  static getTimelineStyle() {
-    return {
-      position: 'relative',
-      overflow: 'hidden',
-    }
   }
 
   static getItemStyleFromDomItem(item: TimelineDOMItem): {

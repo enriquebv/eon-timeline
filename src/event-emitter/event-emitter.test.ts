@@ -1,4 +1,4 @@
-import EventEmitter from './event-emitter'
+import { EventEmitter } from './event-emitter'
 
 interface Event {
   'user-registered': { id: number }

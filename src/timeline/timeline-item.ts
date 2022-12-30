@@ -1,4 +1,4 @@
-import type { Range, Item } from './types'
+import type { Range, Item } from '../types'
 
 export class InvalidOcurrenceRange extends Error {
   constructor() {

@@ -1,4 +1,4 @@
-export default class EventEmitter<Event = { string: any }> {
+export class EventEmitter<Event = { string: any }> {
   private listeners: Record<string, ((payload: Event[keyof Event]) => void)[]> = {}
 
   emit<Topic extends keyof Event>(topic: Topic, payload?: Event[Topic]) {

@@ -1,12 +1,5 @@
-import type { Item, Range, TickScale } from './types'
+import type { Item, Range } from '../types'
 import { TimelineItem } from './timeline-item'
-import EventEmitter from './event-emitter'
-
-export class UnknownScale extends Error {
-  constructor() {
-    super('Unknown scale, please use one of type TickScale.')
-  }
-}
 
 export class MissingRange extends Error {
   constructor() {
@@ -20,13 +13,7 @@ export class ItemNotFoundWithId extends Error {
   }
 }
 
-interface TimelineEvents {
-  'item-added': TimelineItem
-  'item-updated': TimelineItem
-  'item-removed': TimelineItem
-}
-
-export class Timeline extends EventEmitter<TimelineEvents> {
+export class Timeline {
   items: Map<string | number, TimelineItem> = new Map()
   range?: Range
   timespan?: number
@@ -35,8 +22,6 @@ export class Timeline extends EventEmitter<TimelineEvents> {
   itemsRange: Range | null = null
 
   constructor(options: { items: Item[]; range?: Range }) {
-    super()
-
     if (options.range) {
       this.range = { start: options.range.start, end: options.range.end }
       this.timespan = options.range.end - options.range.start
@@ -58,9 +43,6 @@ export class Timeline extends EventEmitter<TimelineEvents> {
 
     const timelineItem = new TimelineItem(item)
     this.items.set(item.id, timelineItem)
-
-    const event: keyof TimelineEvents = action === 'add' ? 'item-added' : 'item-updated'
-    this.emit(event, timelineItem)
 
     if (this.range) {
       timelineItem.computeStatusFromRange(this.range as Range)
@@ -90,7 +72,6 @@ export class Timeline extends EventEmitter<TimelineEvents> {
     const itemEnd = timelineItem.end
 
     this.items.delete(id)
-    this.emit('item-removed', timelineItem)
 
     const wasItemsRangeStart = itemStart === itemsRange.start
     const wasItemsRangeEnd = itemEnd === itemsRange.end
@@ -107,6 +88,11 @@ export class Timeline extends EventEmitter<TimelineEvents> {
         itemsRange.end = Math.max(...itemsAsArray.map((item) => item.end))
       }
     }
+  }
+
+  replaceItems(items: Item[]) {
+    this.items = new Map<string | number, TimelineItem>()
+    items.forEach((item) => this.registerItem('add', item))
   }
 
   calculate() {
@@ -128,59 +114,5 @@ export class Timeline extends EventEmitter<TimelineEvents> {
     this.range = { start, end }
     this.timespan = end - start
     this.calculate()
-  }
-
-  static UNITS_IN_MILLISECONDS = {
-    seconds: 1000,
-    minutes: 60_000,
-    hours: 3_600_000,
-    days: 86_400_000,
-  }
-
-  private static getDatesInRangeByInterval(range: Range, interval: number) {
-    const timestamps: number[] = [range.start]
-
-    while (timestamps[timestamps.length - 1] < range.end) {
-      timestamps.push(timestamps[timestamps.length - 1] + interval)
-    }
-
-    return timestamps
-  }
-
-  getRangeTimestamps(scale: TickScale) {
-    if (!this.range) throw new MissingRange()
-
-    const rangeSpan = this.range.end - this.range.start
-    let offsetStart = this.range.start - rangeSpan / 2
-
-    switch (scale) {
-      case 'seconds':
-        offsetStart = new Date(offsetStart).setUTCMilliseconds(0)
-        break
-      case 'minutes':
-        offsetStart = new Date(offsetStart).setUTCSeconds(0, 0)
-        break
-      case 'hours':
-        offsetStart = new Date(offsetStart).setUTCMinutes(0, 0, 0)
-        break
-      case 'days':
-        offsetStart = new Date(offsetStart).setUTCHours(0, 0, 0)
-        break
-      default:
-        throw new UnknownScale()
-    }
-
-    const offsetEnd = offsetStart + rangeSpan * 1.5
-    const interval = Timeline.UNITS_IN_MILLISECONDS[scale]
-    // Note: ticksRange always will be x2 the timeline timespan.
-    // This is intentional, since it is expected to obtain an offset
-    // of the start and end date in order to be able to respond to dates
-    // that are not yet visible.
-    const offsetRange = { start: offsetStart, end: offsetEnd }
-
-    return Timeline.getDatesInRangeByInterval(offsetRange, interval).map((date) => ({
-      timestamp: date,
-      offsetStart: date - (this.range?.start as number),
-    }))
   }
 }
