@@ -1,14 +1,11 @@
 .eon-timeline {
-  background: #bac1ca;
-  height: 30px;
+  height: 25px;
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid #000;
+  padding: 0px 5px;
 }
 
 .eon-timeline-item {
-  height: 20px;
-  margin: 5px 0px;
-  background: #fff;
+  height: 15px;
   overflow: hidden;
 }
