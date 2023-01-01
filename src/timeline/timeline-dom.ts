@@ -14,8 +14,9 @@ export interface TimelineDOMOptions {
 
 export interface TimelineDOMItem {
   item: Item
+  timeline: Timeline
   width: number
-  startOffsetPx: number
+  startOffset: number
 }
 
 export class MissingContainer extends Error {
@@ -172,8 +173,9 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
 
         timelineResult.push({
           width,
+          timeline: timeline,
           item: itemReference,
-          startOffsetPx: startPxOffset,
+          startOffset: startPxOffset,
         })
       }
 
@@ -190,7 +192,7 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
   } {
     return {
       position: 'absolute',
-      left: `${item.startOffsetPx}px`,
+      left: `${item.startOffset}px`,
       width: `${item.width}px`,
     }
   }

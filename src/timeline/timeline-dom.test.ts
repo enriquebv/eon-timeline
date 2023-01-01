@@ -96,8 +96,9 @@ describe('TimelineDOM', () => {
 
   test('Correctly build item styles', () => {
     const item: TimelineDOMItem = {
-      startOffsetPx: 1000,
+      startOffset: 1000,
       width: 200,
+      timeline: new Timeline({ items: [] }),
       item: {
         id: 1,
         ocurrence: {
