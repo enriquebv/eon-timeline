@@ -14,7 +14,7 @@ export class ItemNotFoundWithId extends Error {
 }
 
 export class Timeline {
-  items: Map<string | number, TimelineItem> = new Map()
+  private items: Map<string | number, TimelineItem> = new Map()
   range?: Range
   timespan?: number
   addItem: (item: Item) => void
@@ -34,6 +34,12 @@ export class Timeline {
     this.addItem = this.registerItem.bind(this, 'add')
     this.updateItem = this.registerItem.bind(this, 'update')
     this.calculate = this.calculate.bind(this)
+  }
+
+  getItem<Data = undefined>(
+    id: string | number
+  ): (Data extends undefined ? TimelineItem : TimelineItem & { itemReference: { data: Data } }) | undefined {
+    return this.items.get(id) as any
   }
 
   private registerItem(action: 'add' | 'update' = 'add', item: Item) {

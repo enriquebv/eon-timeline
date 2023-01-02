@@ -15,6 +15,19 @@ export interface EonTimelineProps {
   onRangeChange(range?: Range): void
 }
 
+export interface EonTimelineDOMItemSizes {
+  width: number
+  startOffset: number
+}
+
+export interface EonTimelineItemProps<Data = undefined> {
+  item: Data extends undefined ? Item : Item & { data: Data }
+  timeline: Timeline
+  sizes: EonTimelineDOMItemSizes
+}
+
+export type EonTimelineUnitItemProps = EonTimelineItemProps<{ isUnitItem: true }>
+
 export interface EonTimelineRef {
   redraw(): void
 }
@@ -69,7 +82,20 @@ const EonTimeline = React.forwardRef<EonTimelineRef, EonTimelineProps>((props, r
                 key={timelineDomItem.item.id}
                 style={TimelineDOM.getItemStyleFromDomItem(timelineDomItem)}
               >
-                {ItemComponent ? <ItemComponent item={timelineDomItem.item} /> : timelineDomItem.item.id}
+                {ItemComponent ? (
+                  <ItemComponent
+                    item={timelineDomItem.item}
+                    timeline={timelineDomItem.timeline}
+                    sizes={
+                      {
+                        width: timelineDomItem.width,
+                        startOffset: timelineDomItem.startOffset,
+                      } satisfies EonTimelineDOMItemSizes
+                    }
+                  />
+                ) : (
+                  timelineDomItem.item.id
+                )}
               </div>
             ))}
           </div>

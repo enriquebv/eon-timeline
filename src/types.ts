@@ -8,4 +8,10 @@ export interface Item {
   ocurrence: Range
 }
 
+export type ItemWithData<Data> = {
+  id: number
+  ocurrence: Range
+  data: Data
+}
+
 export type TickScale = 'seconds' | 'minutes' | 'hours' | 'days'

@@ -1,4 +1,4 @@
-import { Item, Range } from '../types'
+import { Item, ItemWithData, Range } from '../types'
 
 export type TimelineUnit = 'minute' | 'hour' | 'day'
 
@@ -8,55 +8,59 @@ export interface BuildUnitTimelinesOptions {
   unitScale?: number
 }
 
-const UNIT_MILLISECONDS = {
-  second: 1000,
+const MILLISECOND_UNITS = {
   minute: 60_000,
   hour: 3_600_000,
   day: 86_400_000,
 }
 
-export default function buildUnitsTimeline(options: BuildUnitTimelinesOptions): Item[] {
-  const { range, unit } = options
-  const cleanDateSeconds = (t: number): number => new Date(t).setSeconds(0, 0)
-  const cleanDateMinutes = (t: number): number => new Date(t).setUTCMinutes(0, 0, 0)
-  const cleanDateHours = (t: number): number => new Date(t).setUTCHours(0, 0, 0, 0)
+// const resetDateSeconds = (timestamp: number): number => new Date(timestamp).setSeconds(0, 0)
+const resetDateMinutes = (timestamp: number): number => new Date(timestamp).setUTCMinutes(0, 0, 0)
+const resetDateHours = (timestamp: number): number => new Date(timestamp).setUTCHours(0, 0, 0, 0)
 
-  const millisecondsUnit: number = UNIT_MILLISECONDS[unit]
+export function buildUnitsTimeline(options: BuildUnitTimelinesOptions): Item[] {
+  const { range, unit } = options
+  const unitsScale = options.unitScale || 1
+
+  const millisecondsUnit: number = MILLISECOND_UNITS[unit]
   const rangeTimespan = range.end - range.start
   const ticksRange: Range = {
     start: range.start - rangeTimespan,
     end: range.end + rangeTimespan,
   }
-
-  const realRange = Math.ceil((ticksRange.end - ticksRange.start) / millisecondsUnit)
-  let cleanStart: number
+  let closestStart: number
 
   switch (unit) {
     case 'minute':
-      cleanStart = cleanDateSeconds(ticksRange.start)
-      break
     case 'hour':
-      cleanStart = cleanDateMinutes(ticksRange.start)
+      closestStart = resetDateMinutes(ticksRange.start)
       break
     case 'day':
-      cleanStart = cleanDateHours(ticksRange.start)
+      closestStart = resetDateHours(ticksRange.start)
       break
     default:
       throw new Error('invalid')
   }
 
-  const items: Item[] = Array(realRange)
+  let unitsCount = (ticksRange.end - ticksRange.start) / millisecondsUnit / unitsScale
+  unitsCount = Math.max(3, unitsCount) // Note: We ensure at least 3 units will be generated.
+  const itemTimespan = millisecondsUnit * unitsScale
+
+  const unitItems: ItemWithData<{ isUnitItem: true }>[] = Array(Math.ceil(unitsCount))
     .fill(null)
-    .map((_, i) => new Date(cleanStart).valueOf() + millisecondsUnit * i)
+    .map((_, i) => new Date(closestStart).valueOf() + itemTimespan * i)
     .map(
-      (t): Item => ({
+      (t): ItemWithData<{ isUnitItem: true }> => ({
         id: t,
         ocurrence: {
           start: t,
-          end: t + millisecondsUnit,
+          end: t + itemTimespan,
+        },
+        data: {
+          isUnitItem: true,
         },
       })
     )
 
-  return items
+  return unitItems
 }

@@ -1,5 +1,5 @@
 import { ItemNotFoundWithId, Timeline } from './timeline'
-import { Item, Range } from '../types'
+import { Item, ItemWithData, Range } from '../types'
 
 const DEFAULT_TIMESTAMP = 1640995200000
 const HOUR_IN_MILLISECONDS = 3_600_000
@@ -34,22 +34,18 @@ describe('Timeline', () => {
     })
   })
 
-  test('.items property is an instance of Map', () => {
-    expect(timeline.items).toBeInstanceOf(Map)
-  })
-
   test('Items added by constructor are correctly registered', () => {
     timeline = new Timeline({
       items: [FIRST_EXAMPLE_ITEM],
     })
 
-    expect(timeline.items.get(1)).not.toBeUndefined()
+    expect(timeline.getItem(1)).not.toBeUndefined()
   })
 
   test('.addItem() method correctly registers item', () => {
     timeline.addItem(FIRST_EXAMPLE_ITEM)
 
-    expect(timeline.items.get(1)).not.toBeUndefined()
+    expect(timeline.getItem(1)).not.toBeUndefined()
   })
 
   test(".updateItem() method throws ItemNotFoundWithId if item don't exists in timeline.", () => {
@@ -57,16 +53,21 @@ describe('Timeline', () => {
   })
 
   test('.updateItem() method correctly updates item', () => {
-    const UPDATED_ITEM = { ...FIRST_EXAMPLE_ITEM, customProperty: Math.random() } as Item
-
+    type ItemData = { customProperty: number }
     timeline.addItem(FIRST_EXAMPLE_ITEM)
 
-    expect((timeline.items.get(1)?.itemReference as any).customProperty).toBeUndefined()
+    const timelineItem = timeline.getItem(1)
 
+    expect((timelineItem as any).itemReference.data?.customProperty).toBeUndefined()
+
+    const UPDATED_ITEM: ItemWithData<ItemData> = {
+      ...FIRST_EXAMPLE_ITEM,
+      data: { customProperty: Math.random() },
+    }
     timeline.updateItem(UPDATED_ITEM)
 
-    expect((timeline.items.get(1)?.itemReference as any).customProperty).not.toBeUndefined()
-    expect((timeline.items.get(1)?.itemReference as any).customProperty).toBe((UPDATED_ITEM as any).customProperty)
+    expect(timeline.getItem<ItemData>(1)?.itemReference.data.customProperty).not.toBeUndefined()
+    expect(timeline.getItem<ItemData>(1)?.itemReference.data.customProperty).toBe(UPDATED_ITEM.data.customProperty)
   })
 
   test('.removeItem() is defined', () => {
@@ -79,7 +80,7 @@ describe('Timeline', () => {
     timeline.addItem(FIRST_EXAMPLE_ITEM)
     timeline.removeItem(1)
 
-    expect(timeline.items.get(1)).toBeUndefined()
+    expect(timeline.getItem(1)).toBeUndefined()
   })
 
   test('.setRange() method modifies internal values', () => {
