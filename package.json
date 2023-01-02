@@ -1,0 +1,14 @@
+{
+  "name": "timeline-js",
+  "version": "0.2.0",
+  "main": "index.js",
+  "repository": "https://github.com/enriquebv/eon-timeline.git",
+  "author": "Enrique <ebvcontacto@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.2"
+  }
+}

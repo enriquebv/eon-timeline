@@ -3,11 +3,12 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./lib
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
-        working-directory: ./lib
         run: cd yarn
       - name: Run tests
-        working-directory: ./lib
         run: yarn test
