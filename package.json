@@ -5,6 +5,11 @@
   "repository": "https://github.com/enriquebv/eon-timeline.git",
   "author": "Enrique <ebvcontacto@gmail.com>",
   "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "examples/*",
+    "lib"
+  ],
   "scripts": {
     "prepare": "husky install"
   },

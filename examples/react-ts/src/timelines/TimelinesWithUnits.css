@@ -1,0 +1,13 @@
+.eon-timeline.units .eon-timeline-item {
+  margin: 0;
+  height: 25px;
+  line-height: 24px;
+  background: #ecf0f1;
+  color: #2c3e50;
+}
+
+.eon-timeline.units .eon-timeline-item .event-timeline-time-event {
+  font-weight: bold;
+  border-right: 1px solid #7f8c8d;
+  border-bottom: 1px solid #7f8c8d;
+}
