@@ -9,7 +9,7 @@ export class EventEmitter<Event = { string: any }> {
     listeners.forEach((listener) => listener(payload as any))
   }
 
-  on<Topic extends keyof Event>(topic: Topic, callbackReference: (payload?: Event[Topic]) => void) {
+  on<Topic extends keyof Event>(topic: Topic, callbackReference: (payload: Event[Topic]) => void) {
     if (!this.listeners[topic as string]) {
       this.listeners[topic as string] = []
     }

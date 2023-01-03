@@ -56,7 +56,10 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
 
   componentDidMount() {
     this.setupTimelineDom()
-    // this.setupImperativeHandlers()
+
+    if (this.props.forwardedRef) {
+      this.setupImperativeHandlers()
+    }
   }
 
   componentDidUpdate(prevProps: Readonly<EonTimelineProps>): void {
@@ -73,7 +76,9 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
   }
 
   checkChildren() {
-    React.Children.forEach(this.props.children, (child: any) => {
+    const childs = React.Children.toArray(this.props.children).filter((child) => child !== null)
+
+    childs.forEach((child: any) => {
       const childName = child.type.displayName || child.type.name
 
       if (childName !== EonTimelineLane.displayName) {
@@ -112,7 +117,9 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
   }
 
   findChildLane(timeline: Timeline) {
-    const childLanes = React.Children.toArray(this.props.children) as React.ReactElement<EonTimelineLaneProps>[]
+    const childLanes = React.Children.toArray(this.props.children).filter(
+      (child) => child !== null
+    ) as React.ReactElement<EonTimelineLaneProps>[]
 
     return childLanes.find((childLane) => childLane.props.timeline === timeline)
   }
