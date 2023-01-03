@@ -22,9 +22,9 @@ export default function TimelineWithCustomComponent(props: ExampleProps) {
 
   return (
     <EonTimeline range={range} timelines={timelines} onRangeChange={setRange}>
-      {timelines.map((timeline, index) =>
-        index % 2 === 0 ? <EonTimelineLane timeline={timeline} EventComponent={EventComponent} /> : null
-      )}
+      {timelines.map((timeline) => (
+        <EonTimelineLane timeline={timeline} EventComponent={EventComponent} />
+      ))}
     </EonTimeline>
   )
 }
