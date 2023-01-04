@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "examples/*",
+    "examples/react-ts",
     "lib"
   ],
   "scripts": {

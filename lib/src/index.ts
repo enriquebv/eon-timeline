@@ -1,3 +1,5 @@
 export * from './types'
 export * from './timeline'
 export * from './helpers/build-units-timeline'
+export * from './components/react'
+export { default as EonTimelineReact } from './components/react'

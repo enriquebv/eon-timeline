@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { Timeline } from '../../timeline'
-import { Item } from '../../types'
+import { Item, Timeline } from '../../index'
 
 export interface EonTimelineProps extends PropsWithChildren {
   timelines: Timeline[]
