@@ -1,11 +1,11 @@
-name: CI
+name: Test core
 on: push
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./lib
+        working-directory: ./core
     steps:
       - uses: actions/checkout@v2
       - name: Install modules
