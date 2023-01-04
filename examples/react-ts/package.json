@@ -1,5 +1,5 @@
 {
-  "name": "vite",
+  "name": "eon-timeline-react-example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "eon-timeline": "0.2.0",
+    "hammerjs": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
