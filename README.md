@@ -25,7 +25,7 @@
 - **Flexibility**: The main target of this library, allow you to create your own timeline experience.
 - **Headless**: Core package contains logic to compute event status, and a DOM adapter to transform that status to valid CSS position.
 - **Pre-built components**: Even the core being headless, you can use pre-built [components](./components/) to save time.
-  - Currently only React (`eon-timeline/react`) is supported, Vue and Svelte are in the roadmap.
+  - Currently only React (`@eon-timeline/react`) is supported, Vue and Svelte are in the roadmap.
 - **Update timelines in real-time**: Add, remove and update items from timelines.
 - **Virtualized time navigation**: Pans timeline left and right to view past or future (respectively). DOM adapter will just take care of visible items, so you can store thousands of events.
 
@@ -67,9 +67,7 @@
 
 ## Support
 
-If you find this library useful, consider [](https://www.buymeacoffee.com/enriquebv)
-
-Please consider donating if you think eon-timeline is helpful to you or that my work is valuable. [I am happy if you can help me buy a cup of coffee](https://www.buymeacoffee.com/enriquebv). :heart:
+If you think eon-timeline is helpful, or my work is valuable, [consider buying me a cup of coffee](https://www.buymeacoffee.com/enriquebv). :heart:
 
 ## License
 
