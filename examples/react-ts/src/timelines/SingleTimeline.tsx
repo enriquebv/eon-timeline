@@ -1,6 +1,6 @@
 import { Timeline } from 'eon-timeline'
-import EonTimeline from 'eon-timeline/dist/components/react'
-import { useEffect, useRef, useState } from 'react'
+import { EonTimelineReact as EonTimeline } from 'eon-timeline'
+import { useEffect, useState } from 'react'
 import makeRandomItemCollection from '../../../example-items'
 import { ExampleProps, RANGES_PER_UNIT } from './shared'
 
