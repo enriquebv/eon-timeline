@@ -1,11 +1,11 @@
 {
   "name": "@eon-timeline/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/enriquebv/eon-timeline"
   },
-  "main": "dist/index.mjs",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/dist"
