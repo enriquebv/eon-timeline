@@ -1,5 +1,5 @@
-import { Timeline } from 'eon-timeline'
-import { EonTimelineReact as EonTimeline } from 'eon-timeline'
+import { Timeline } from '@eon-timeline/core'
+import { EonTimeline } from '@eon-timeline/react'
 import { useEffect, useState } from 'react'
 import makeRandomItemCollection from '../../../example-items'
 import { ExampleProps, RANGES_PER_UNIT } from './shared'

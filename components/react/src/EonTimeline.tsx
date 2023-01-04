@@ -1,8 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Timeline } from '../../timeline'
-import { TimelineDOM, TimelineDOMItem } from '../../timeline'
-import { Range } from '../../types'
+import { Timeline, TimelineDOM, TimelineDOMItem, Range } from '@eon-timeline/core'
 
 import { EonTimelineLane, EonTimelineLaneProps } from './EonTimelineLane'
 import { EonTimelineDOMItemSizes } from './types'

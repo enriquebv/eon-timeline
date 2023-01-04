@@ -8,12 +8,19 @@
   "private": true,
   "workspaces": [
     "examples/react-ts",
-    "lib"
+    "components/react",
+    "core"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "bundle": "rollup -c"
   },
   "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.3",
+    "rollup": "^3.9.1",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-dts": "^5.1.0",
+    "rollup-plugin-esbuild": "^5.0.0",
     "husky": "^8.0.2"
   }
 }

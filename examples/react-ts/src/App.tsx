@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import './App.css'
-import 'eon-timeline/dist/styles.css'
+import '@eon-timeline/core/dist/styles.css'
 import reactLogo from './assets/react.svg'
 
 import SingleTimeline from './timelines/SingleTimeline'

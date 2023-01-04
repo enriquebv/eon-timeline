@@ -1,11 +1,6 @@
 import { useState } from 'react'
-import { Timeline, Range, buildUnitsTimeline } from 'eon-timeline'
-import {
-  EonTimelineItemProps,
-  EonTimelineLane,
-  EonTimelineUnitItemProps,
-  EonTimelineReact as EonTimeline,
-} from 'eon-timeline'
+import { Timeline, Range, buildUnitsTimeline } from '@eon-timeline/core'
+import { EonTimelineItemProps, EonTimelineLane, EonTimelineUnitItemProps, EonTimeline } from '@eon-timeline/react'
 import { makeItemsCollection, RANGES_PER_UNIT } from './shared'
 import './TimelinesWithUnits.css' // <- Styles of units
 

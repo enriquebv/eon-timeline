@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { Timeline } from '../../timeline'
+import { Timeline } from '@eon-timeline/core'
 import { EonTimelineItemProps, EonTimelineUnitItemProps } from './types'
 
 export interface EonTimelineLaneProps extends PropsWithChildren {

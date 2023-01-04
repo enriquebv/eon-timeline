@@ -1,0 +1,17 @@
+{
+  "name": "@eon-timeline/react",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/enriquebv/eon-timeline"
+  },
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "peerDependencies": {
+    "hammerjs": "^2.0.8",
+    "@eon-timeline/core": "0.2.0"
+  }
+}
