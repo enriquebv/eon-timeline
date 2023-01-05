@@ -23,6 +23,8 @@ window.ResizeObserver = ResizeObserverMock
 describe('TimelineDOM', () => {
   let timelineDom: TimelineDOM
   let container: HTMLDivElement
+  let onRenderMock: jest.Mock
+
   const range: Range = {
     start: Date.now(),
     end: Date.now() + 3_600_000,
@@ -30,6 +32,7 @@ describe('TimelineDOM', () => {
 
   beforeEach(() => {
     container = document.createElement('div')
+    onRenderMock = jest.fn(() => {})
     timelineDom = new TimelineDOM({
       range,
       container,
@@ -39,14 +42,14 @@ describe('TimelineDOM', () => {
             {
               id: 1,
               ocurrence: {
-                start: Date.now(),
-                end: Date.now(),
+                start: Date.now() + 50,
+                end: Date.now() + 100,
               },
             },
           ],
         }),
       ],
-      onRender: () => {},
+      onRender: onRenderMock,
     })
   })
 
@@ -113,5 +116,64 @@ describe('TimelineDOM', () => {
       left: `${1000}px`,
       width: `${200}px`,
     })
+  })
+
+  test('If timeline is added and redraw method is called, that timeline should be part of the onRender payload', () => {
+    timelineDom.redraw()
+
+    const firstOnRenderTriggerPayload = onRenderMock.mock.calls[0][0]
+
+    expect(firstOnRenderTriggerPayload.length).toBe(1)
+
+    timelineDom.addTimeline(new Timeline({ items: [] }))
+    timelineDom.addTimeline(new Timeline({ items: [] }))
+    timelineDom.redraw()
+
+    const secondOnRenderTriggerPayload = onRenderMock.mock.calls[1][0]
+
+    expect(secondOnRenderTriggerPayload.length).toBe(3)
+  })
+
+  test('If timeline is removed and redraw method is called, that timeline should be not included of the onRender payload', () => {
+    // Note: Add timeline with 3 elements to check is not present after remove.
+    const items = [
+      {
+        id: 1,
+        ocurrence: {
+          start: Date.now() + 50,
+          end: Date.now() + 100,
+        },
+      },
+      {
+        id: 2,
+        ocurrence: {
+          start: Date.now() + 100,
+          end: Date.now() + 150,
+        },
+      },
+      {
+        id: 3,
+        ocurrence: {
+          start: Date.now() + 150,
+          end: Date.now() + 200,
+        },
+      },
+    ]
+    timelineDom.addTimeline(new Timeline({ items }))
+    timelineDom.redraw()
+
+    const firstOnRenderTriggerPayload = onRenderMock.mock.calls[0][0]
+
+    expect(firstOnRenderTriggerPayload.length).toBe(2)
+    expect(firstOnRenderTriggerPayload[0].length).toBe(1)
+    expect(firstOnRenderTriggerPayload[1].length).toBe(3)
+
+    timelineDom.removeTimeline(1)
+    timelineDom.redraw()
+
+    const secondOnRenderTriggerPayload = onRenderMock.mock.calls[1][0]
+
+    expect(secondOnRenderTriggerPayload.length).toBe(1)
+    expect(secondOnRenderTriggerPayload[0].length).toBe(1)
   })
 })

@@ -19,6 +19,12 @@ export interface TimelineDOMItem {
   startOffset: number
 }
 
+export class MissingTimelineWithIndex extends Error {
+  constructor(index: number) {
+    super(`Timeline with index ${index} missing.`)
+  }
+}
+
 export class MissingContainer extends Error {
   constructor() {
     super('Container is needed to use TimelineDOM.')
@@ -54,7 +60,7 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
     this.renderCallback = options.onRender
     this.ResizeObserver = options.customResizeObserver ?? window.ResizeObserver
 
-    options.timelines.forEach(this.addTimeline.bind(this))
+    options.timelines.forEach(this.registerTimeline.bind(this))
     this.computeMillisecondsPerPixel()
     this.setupPanEvents()
     this.setupResizeEvents()
@@ -71,7 +77,21 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
     this.emitRenderCallback()
   }
 
-  private addTimeline(timeline: Timeline, index?: number) {
+  addTimeline(timeline: Timeline) {
+    this.registerTimeline(timeline)
+  }
+
+  removeTimeline(index: number) {
+    const timeline = this.timelines[index]
+
+    if (!timeline) {
+      throw new MissingTimelineWithIndex(index)
+    }
+
+    this.timelines.splice(index, 1)
+  }
+
+  private registerTimeline(timeline: Timeline, index?: number) {
     if (!index) {
       this.timelines.push(timeline)
     } else {
