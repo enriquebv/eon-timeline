@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Timeline, TimelineDOM } from '@eon-timeline/core'
 import { EonTimeline, EonTimelineItemProps, EonTimelineLane } from '@eon-timeline/react'
 import { makeItemsCollection, RANGES_PER_UNIT } from './shared'
@@ -32,9 +32,12 @@ const EventComponent = React.memo(
 export default function DynamicEvents() {
   const [range, setRange] = useState(RANGES_PER_UNIT.hour)
   const timelineDomRef = useRef<TimelineDOM>(null)
-  const interval = useRef<NodeJS.Timer>()
+  const [realtimeStatus, setRealtimeStatus] = useState<'running' | 'stopped'>('running')
+  const interval = useRef<NodeJS.Timer | null>(null)
 
-  function handleIntervalStart() {
+  function startInterval() {
+    if (interval.current !== null) return
+
     interval.current = setInterval(function () {
       const randomTimelineIndex = Math.floor(Math.random() * timelines.length)
       const timeline = timelines[randomTimelineIndex]
@@ -55,19 +58,31 @@ export default function DynamicEvents() {
     }, 1000)
   }
 
-  function handleIntervalStop() {
-    clearInterval(interval.current)
+  function stopInterval() {
+    clearInterval(interval.current as NodeJS.Timer)
+    interval.current = null
   }
+
+  useEffect(() => {
+    realtimeStatus === 'running' ? startInterval() : stopInterval()
+  }, [realtimeStatus])
 
   return (
     <div className='timeline-with-units'>
-      <button onClick={handleIntervalStart}>Start</button>
-      <button onClick={handleIntervalStop}>Stop</button>
       <EonTimeline timelineDomRef={timelineDomRef} range={range} timelines={timelines} onRangeChange={setRange}>
         {timelines.map((timeline) => (
           <EonTimelineLane timeline={timeline} EventComponent={EventComponent} />
         ))}
       </EonTimeline>
+      <div className='controls'>
+        <div>
+          <button
+            onClick={() => (realtimeStatus === 'running' ? setRealtimeStatus('stopped') : setRealtimeStatus('running'))}
+          >
+            {realtimeStatus === 'running' ? 'Pause' : 'Resume'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

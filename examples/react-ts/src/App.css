@@ -41,3 +41,25 @@
   font-size: 10px;
   line-height: 15px;
 }
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.controls p {
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.panels {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+.panels > div {
+  padding: 20px;
+}

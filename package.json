@@ -14,7 +14,8 @@
   "scripts": {
     "prepare": "husky install",
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "dev:react": "yarn workspace eon-timeline-react-example dev"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.3",

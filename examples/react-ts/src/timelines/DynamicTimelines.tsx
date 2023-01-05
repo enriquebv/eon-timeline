@@ -14,7 +14,6 @@ const timelines = [
 
 export default function DynamicTimeline() {
   const [range, setRange] = useState(RANGES_PER_UNIT.hour)
-  const [indexToRemove, setIndexToRemove] = useState<number>(0)
   const timelineDomRef = useRef<TimelineDOM>(null)
 
   function handleTimelineAdd() {
@@ -23,24 +22,28 @@ export default function DynamicTimeline() {
   }
 
   function handleTimelineRemove() {
-    timelineDomRef.current?.removeTimeline(indexToRemove)
-    timelineDomRef.current?.redraw()
-    setIndexToRemove(0)
+    const response = Number(prompt('Timeline index to remove', '0'))
+
+    try {
+      timelineDomRef.current?.removeTimeline(response)
+      timelineDomRef.current?.redraw()
+    } catch (error) {
+      alert((error as Error).message)
+    }
   }
 
   return (
     <div className='timeline-with-units'>
-      <button onClick={handleTimelineAdd}>Add timeline</button>
-      <label>
-        <input
-          type='number'
-          placeholder='Timeline index (starts at 0)'
-          value={indexToRemove}
-          onChange={(event) => setIndexToRemove(Math.max(0, event.target.valueAsNumber || 0))}
-        />
-        <button onClick={handleTimelineRemove}>Remove timeline</button>
-      </label>
       <EonTimeline timelineDomRef={timelineDomRef} range={range} timelines={timelines} onRangeChange={setRange} />
+      <div className='controls'>
+        <p>Actions:</p>
+        <div>
+          <button onClick={handleTimelineAdd}>Add timeline</button>
+          <label>
+            <button onClick={handleTimelineRemove}>Remove timeline</button>
+          </label>
+        </div>
+      </div>
     </div>
   )
 }
