@@ -7,9 +7,7 @@
 <h4 align="center">A flexible timeline solution.</h4>
 
 <p align="center">
-  <a href="https://badge.fury.io/js/virtual-headless-timeline">
-    <img src="https://badge.fury.io/js/virtual-headless-timeline.svg" alt="npm">
-  </a>
+  <a href="https://badge.fury.io/js/@eon-timeline%2Fcore"><img src="https://badge.fury.io/js/@eon-timeline%2Fcore.svg" alt="npm version" height="18"></a>
 </p>
 
 <p align="center">

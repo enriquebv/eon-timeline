@@ -312,6 +312,16 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@eon-timeline/core@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@eon-timeline/core/-/core-0.2.0.tgz#d7ab58d9acf51780e7966815d051f13d99128600"
+  integrity sha512-gquRapFWlbZqO6Hz3vw0KfBvcUk9gQJL6s0w/nsAnwQpJ316cRAPJnbpDHj04+mLPWChlMIKrCBHz7xiwiNlog==
+
+"@eon-timeline/react@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@eon-timeline/react/-/react-0.1.0.tgz#8857e8f777a266603d8a74c9ef58ba43ba26f378"
+  integrity sha512-McHLiufnx5Ffa2V0YYdXUJnI4KgUS2alRIdDFogDCrQuiIvcgkFCKz+xbHlzbvPWs4zKj6UNmLM0yMAwJTg7AA==
+
 "@esbuild/android-arm64@0.16.14":
   version "0.16.14"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.16.14.tgz#f02c9f0d43086ddf6ed2795b881ddf7990f74456"
