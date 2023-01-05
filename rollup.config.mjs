@@ -43,6 +43,4 @@ const core = [
 ]
 const reactComponent = [bundleCode('components/react'), bundleTypes('components/react')]
 
-console.log(core[0])
-
 export default [...core, ...reactComponent]

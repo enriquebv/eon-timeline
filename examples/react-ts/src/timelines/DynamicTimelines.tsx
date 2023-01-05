@@ -30,7 +30,6 @@ export default function DynamicTimeline() {
 
   return (
     <div className='timeline-with-units'>
-      <button></button>
       <button onClick={handleTimelineAdd}>Add timeline</button>
       <label>
         <input
