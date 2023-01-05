@@ -1,10 +1,12 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Build examples and deploy to GH Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ['main']
+    paths:
+      - core/**
+      - components/**
+      - examples/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -27,16 +29,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./examples/react-ts
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install modules
+      - name: Install
         run: yarn
-      - name: Build
-        run: BASE_URL=./ yarn build
+      - name: Build packages
+        run: yarn build
+      - name: Build react example
+        run: BASE_URL=./ yarn workspace eon-timeline-react-example build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
