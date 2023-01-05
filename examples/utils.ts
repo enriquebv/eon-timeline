@@ -11,7 +11,7 @@ export interface EventsExampleOptions {
   }
 }
 
-const getNumberBetween = (min: number, max: number) => Math.max(min, Math.floor(Math.random() * max))
+export const getNumberBetween = (min: number, max: number) => Math.max(min, Math.floor(Math.random() * max))
 
 export function makeRandomItem() {
   const now = Date.now()

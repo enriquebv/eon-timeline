@@ -1,5 +1,5 @@
 import { Range } from '@eon-timeline/core'
-import makeRandomItemCollection from '../../../example-items'
+import makeRandomItemCollection from '../../../utils'
 
 export type ExampleRangeUnit = 'minute' | 'hour' | 'day'
 

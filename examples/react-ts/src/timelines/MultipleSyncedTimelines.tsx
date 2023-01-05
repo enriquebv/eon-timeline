@@ -1,7 +1,7 @@
 import { Timeline } from '@eon-timeline/core'
 import { EonTimeline } from '@eon-timeline/react'
 import { useEffect, useState } from 'react'
-import makeRandomItemCollection from '../../../example-items'
+import makeRandomItemCollection from '../../../utils'
 import { ExampleProps, RANGES_PER_UNIT } from './shared'
 
 function makeItemsCollection() {

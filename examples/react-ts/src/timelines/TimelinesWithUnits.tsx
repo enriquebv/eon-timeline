@@ -25,12 +25,6 @@ function EventItem(props: EonTimelineItemProps) {
   return <div>ID: {props.item.id}</div>
 }
 
-function ItemComponent(props: EonTimelineItemProps | EonTimelineUnitItemProps) {
-  const isUnitItem = (props as EonTimelineUnitItemProps).item.data?.isUnitItem
-
-  return isUnitItem ? <UnitItem {...(props as EonTimelineUnitItemProps)} /> : <EventItem {...props} />
-}
-
 export default function ExampleTimelineDay() {
   const [range, setRange] = useState(RANGES_PER_UNIT.hour)
 

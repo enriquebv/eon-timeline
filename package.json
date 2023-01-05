@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "prepare": "husky install",
-    "bundle": "rollup -c"
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
   },
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.3",

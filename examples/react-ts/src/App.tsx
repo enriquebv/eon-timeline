@@ -9,6 +9,8 @@ import MultipleSyncedTimelines from './timelines/MultipleSyncedTimelines'
 import TimlinesWithUnits from './timelines/TimelinesWithUnits'
 import { ExampleRangeUnit } from './timelines/shared'
 import TimelineWithCustomComponent from './timelines/TimelineWithCustomEventComponent'
+import DynamicTimeline from './timelines/DynamicTimelines'
+import DynamicEvents from './timelines/DynamicEvents'
 
 function App() {
   const [rangeUnit, setRangeUnit] = useState<ExampleRangeUnit>('hour')
@@ -39,6 +41,12 @@ function App() {
 
       <h3>Timelines with units</h3>
       <TimlinesWithUnits />
+
+      <h3>Real-time events</h3>
+      <DynamicEvents />
+
+      <h3>Dynamic add/remove timeline lanes</h3>
+      <DynamicTimeline />
     </div>
   )
 }
