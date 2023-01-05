@@ -1,13 +1,4 @@
-import { PropsWithChildren } from 'react'
 import { Item, Timeline } from '@eon-timeline/core'
-
-export interface EonTimelineProps extends PropsWithChildren {
-  timelines: Timeline[]
-  range: Range
-  className?: string
-  ItemComponent?: (props: EonTimelineItemProps) => JSX.Element
-  onRangeChange(range: Range): void
-}
 
 export interface EonTimelineDOMItemSizes {
   width: number
@@ -15,7 +6,7 @@ export interface EonTimelineDOMItemSizes {
 }
 
 export interface EonTimelineItemProps<Data = undefined> {
-  item: Data extends undefined ? Item : Item & { data: Data }
+  item: Data extends undefined ? Item & { data?: undefined } : Item & { data?: Data }
   timeline: Timeline
   sizes: EonTimelineDOMItemSizes
 }

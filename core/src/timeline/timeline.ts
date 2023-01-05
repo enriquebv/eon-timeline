@@ -115,6 +115,10 @@ export class Timeline {
     return result
   }
 
+  getTimelineEvents(): TimelineItem[] {
+    return Array.from(this.items.values())
+  }
+
   setRange(range: Range) {
     const { start, end } = range
     this.range = { start, end }

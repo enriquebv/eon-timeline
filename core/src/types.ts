@@ -3,9 +3,10 @@ export interface Range {
   end: number
 }
 
-export interface Item {
+export interface Item<Data = unknown> {
   id: number
   ocurrence: Range
+  data?: Data
 }
 
 export type ItemWithData<Data> = {
