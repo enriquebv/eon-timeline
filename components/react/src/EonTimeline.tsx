@@ -10,14 +10,8 @@ export interface EonTimelineProps extends PropsWithChildren {
   range: Range
   className?: string
   onRangeChange(range: Range): void
-}
-
-interface EonTimelinePropsForwardedRef extends EonTimelineProps {
-  forwardedRef: React.ForwardedRef<EonTimelineImperativeHandlers>
-}
-
-export interface EonTimelineRef {
-  redraw(): void
+  timelineDomRef?: React.ForwardedRef<TimelineDOM>
+  containerRef?: React.ForwardedRef<HTMLDivElement>
 }
 
 export class InvalidChildren extends Error {
@@ -32,16 +26,17 @@ interface EonTimelineState {
   timelinesDomItems: TimelineDOMItem[][]
 }
 
-interface EonTimelineImperativeHandlers {
-  redraw(): void
+function assignRef<RefType = any>(ref: React.ForwardedRef<RefType>, value: RefType) {
+  const refIsFunction = typeof ref === 'function'
+
+  refIsFunction ? ref(value) : ((ref as any).current = value)
 }
 
-class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimelineState> {
+export default class EonTimeline extends React.Component<EonTimelineProps, EonTimelineState> {
   containerRef: HTMLDivElement | null = null
   timelineDom: TimelineDOM | null = null
-  imperativeHandlers: EonTimelineImperativeHandlers | null = null
 
-  constructor(props: Readonly<EonTimelinePropsForwardedRef>) {
+  constructor(props: Readonly<EonTimelineProps>) {
     console.log('contruct eon timeline')
     super(props)
 
@@ -54,10 +49,6 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
 
   componentDidMount() {
     this.setupTimelineDom()
-
-    if (this.props.forwardedRef) {
-      this.setupImperativeHandlers()
-    }
   }
 
   componentDidUpdate(prevProps: Readonly<EonTimelineProps>): void {
@@ -86,9 +77,10 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
   }
 
   setupTimelineDom() {
+    const container = this.containerRef as HTMLDivElement
     const timelineDom = new TimelineDOM({
+      container,
       range: this.props.range,
-      container: this.containerRef as HTMLElement,
       timelines: this.props.timelines,
       onRender: (timelinesDomItems: TimelineDOMItem[][]) => {
         this.setState({ timelinesDomItems })
@@ -97,21 +89,15 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
 
     timelineDom.on('range-change', this.props.onRangeChange)
 
+    if (this.props.timelineDomRef) {
+      assignRef(this.props.timelineDomRef, timelineDom)
+    }
+
+    if (this.props.containerRef) {
+      assignRef(this.props.containerRef, container)
+    }
+
     this.timelineDom = timelineDom
-  }
-
-  setupImperativeHandlers() {
-    const forwardedRef = this.props.forwardedRef
-
-    const actions: EonTimelineImperativeHandlers = {
-      redraw: () => this.timelineDom?.redraw(),
-    }
-
-    if (typeof forwardedRef === 'function') {
-      forwardedRef(actions)
-    } else {
-      ;(forwardedRef as any).current = actions
-    }
   }
 
   findChildLane(timeline: Timeline) {
@@ -179,7 +165,3 @@ class EonTimeline extends React.Component<EonTimelinePropsForwardedRef, EonTimel
     )
   }
 }
-
-export default React.forwardRef<EonTimelineImperativeHandlers, EonTimelineProps>(
-  (props: EonTimelineProps, ref: any) => <EonTimeline {...props} forwardedRef={ref} />
-)
