@@ -15,6 +15,7 @@
     "prepare": "husky install",
     "build": "rollup -c",
     "dev": "rollup -c -w",
+    "test": "yarn workspace @eon-timeline/core test",
     "dev:react": "yarn workspace eon-timeline-react-example dev"
   },
   "devDependencies": {
