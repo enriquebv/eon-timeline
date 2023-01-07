@@ -10,5 +10,3 @@ export interface EonTimelineOcurrenceProps<Data = undefined> {
   timeline: Timeline
   sizes: EonTimelineDOMOcurrenceSizes
 }
-
-export type EonTimelineUnitOcurrenceProps = EonTimelineOcurrenceProps<{ isUnitOcurrence: true }>
