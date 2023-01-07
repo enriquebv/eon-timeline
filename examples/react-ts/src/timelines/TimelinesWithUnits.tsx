@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { Timeline, Range, buildUnitsTimeline } from '@eon-timeline/core'
-import {
-  EonTimelineOcurrenceProps,
-  EonTimelineLane,
-  EonTimelineUnitOcurrenceProps,
-  EonTimeline,
-} from '@eon-timeline/react'
+import { EonTimelineOcurrenceProps, EonTimelineLane, EonTimeline } from '@eon-timeline/react'
 import { makeOcurrencesCollection, RANGES_PER_UNIT } from './shared'
 import './TimelinesWithUnits.css' // <- Styles of units
 
@@ -22,7 +17,7 @@ const timelines = [
 
 const formatTime = (timestamp: number) => new Date(timestamp).toTimeString().split(' ')[0]
 
-function UnitOcurrence(props: EonTimelineUnitOcurrenceProps) {
+function UnitOcurrence(props: EonTimelineOcurrenceProps) {
   return <div className='unit-ocurrence'>{formatTime(props.ocurrence.range.start)}</div>
 }
 
