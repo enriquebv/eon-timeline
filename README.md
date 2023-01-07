@@ -21,11 +21,11 @@
 ## Key Features
 
 - **Flexibility**: The main target of this library, allow you to create your own timeline experience.
-- **Headless**: Core package contains logic to compute event status, and a DOM adapter to transform that status to valid CSS position.
+- **Headless**: Core package contains logic to compute ocurrence status, and a DOM adapter to transform that status to valid CSS position.
 - **Pre-built components**: Even the core being headless, you can use pre-built [components](./components/) to save time.
   - Currently only React (`@eon-timeline/react`) is supported, Vue and Svelte are in the roadmap.
-- **Update timelines in real-time**: Add, remove and update items from timelines.
-- **Virtualized time navigation**: Pans timeline left and right to view past or future (respectively). DOM adapter will just take care of visible items, so you can store thousands of events.
+- **Update timelines in real-time**: Add, remove and update ocurrences from timelines.
+- **Virtualized time navigation**: Pans timeline left and right to view past or future (respectively). DOM adapter will just take care of visible ocurrences, so you can store thousands of ocurrences.
 
 ### Coming soon features:
 
@@ -44,12 +44,12 @@
 ### v1.0.0
 
 - Timeline manager:
-  - Basic range and event status computation.
-  - Add, update and remove events.
+  - Basic range and ocurrence status computation.
+  - Add, update and remove ocurrences.
 - Timeline DOM adapter:
   - Sync range between multiple timelines.
-  - Transform timeline events status to DOM position.
-  - Virtualize events.
+  - Transform timeline ocurrences status to DOM position.
+  - Virtualize ocurrences.
   - Support responsible.
   - Support gestures; navigate through times using pan gesture.
   - Dynamic add/remove timelines.
@@ -58,8 +58,8 @@
 
 - Svelte pre-built component.
 - Vue pre-built component.
-- Enhance events support:
-  - On item add/update/remove.
+- Enhance ocurrences support:
+  - On ocurrence add/update/remove.
   - On timeline add/remove.
   - On range change/changed.
 

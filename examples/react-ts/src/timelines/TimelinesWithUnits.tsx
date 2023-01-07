@@ -1,28 +1,33 @@
 import { useState } from 'react'
 import { Timeline, Range, buildUnitsTimeline } from '@eon-timeline/core'
-import { EonTimelineItemProps, EonTimelineLane, EonTimelineUnitItemProps, EonTimeline } from '@eon-timeline/react'
-import { makeItemsCollection, RANGES_PER_UNIT } from './shared'
+import {
+  EonTimelineOcurrenceProps,
+  EonTimelineLane,
+  EonTimelineUnitOcurrenceProps,
+  EonTimeline,
+} from '@eon-timeline/react'
+import { makeOcurrencesCollection, RANGES_PER_UNIT } from './shared'
 import './TimelinesWithUnits.css' // <- Styles of units
 
 const timelines = [
   new Timeline({
-    items: buildUnitsTimeline({ range: RANGES_PER_UNIT.hour, unit: 'minute', unitScale: 15 }),
+    ocurrences: buildUnitsTimeline({ range: RANGES_PER_UNIT.hour, unit: 'minute', unitScale: 15 }),
   }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
 ]
 
 const formatTime = (timestamp: number) => new Date(timestamp).toTimeString().split(' ')[0]
 
-function UnitItem(props: EonTimelineUnitItemProps) {
-  return <div className='event-timeline-time-event'>{formatTime(props.item.ocurrence.start)}</div>
+function UnitOcurrence(props: EonTimelineUnitOcurrenceProps) {
+  return <div className='unit-ocurrence'>{formatTime(props.ocurrence.range.start)}</div>
 }
 
-function EventItem(props: EonTimelineItemProps) {
-  return <div>ID: {props.item.id}</div>
+function OcurrenceOcurrence(props: EonTimelineOcurrenceProps) {
+  return <div>ID: {props.ocurrence.id}</div>
 }
 
 export default function ExampleTimelineDay() {
@@ -34,11 +39,11 @@ export default function ExampleTimelineDay() {
         range={range}
         timelines={timelines}
         onRangeChange={(range) => {
-          timelines[0].replaceItems(buildUnitsTimeline({ range: range as Range, unit: 'minute', unitScale: 15 }))
+          timelines[0].replaceOcurrences(buildUnitsTimeline({ range: range as Range, unit: 'minute', unitScale: 15 }))
           setRange(range as Range)
         }}
       >
-        <EonTimelineLane timeline={timelines[0]} EventComponent={UnitItem} className='units' />
+        <EonTimelineLane timeline={timelines[0]} OcurrenceComponent={UnitOcurrence} className='units' />
       </EonTimeline>
     </div>
   )

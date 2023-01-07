@@ -8,7 +8,7 @@ import {
   TimelineDOMOptions,
   MissingContainer,
   MissingOnRenderFunction,
-  TimelineDOMItem,
+  TimelineOcurrenceDOM,
 } from './timeline-dom'
 import { Range } from '../types'
 
@@ -38,10 +38,10 @@ describe('TimelineDOM', () => {
       container,
       timelines: [
         new Timeline({
-          items: [
+          ocurrences: [
             {
               id: 1,
-              ocurrence: {
+              range: {
                 start: Date.now() + 50,
                 end: Date.now() + 100,
               },
@@ -97,21 +97,21 @@ describe('TimelineDOM', () => {
     expect((timelineDom as any).sharedTimespan).toEqual(100)
   })
 
-  test('Correctly build item styles', () => {
-    const item: TimelineDOMItem = {
+  test('Correctly build ocurrence styles', () => {
+    const ocurrence: TimelineOcurrenceDOM = {
       startOffset: 1000,
       width: 200,
-      timeline: new Timeline({ items: [] }),
-      item: {
+      timeline: new Timeline({ ocurrences: [] }),
+      ocurrence: {
         id: 1,
-        ocurrence: {
+        range: {
           start: Date.now(),
           end: Date.now(),
         },
       },
     }
 
-    expect(TimelineDOM.getItemStyleFromDomItem(item)).toEqual({
+    expect(TimelineDOM.getOcurrenceStyleFromOcurrenceDOM(ocurrence)).toEqual({
       position: 'absolute',
       left: `${1000}px`,
       width: `${200}px`,
@@ -125,8 +125,8 @@ describe('TimelineDOM', () => {
 
     expect(firstOnRenderTriggerPayload.length).toBe(1)
 
-    timelineDom.addTimeline(new Timeline({ items: [] }))
-    timelineDom.addTimeline(new Timeline({ items: [] }))
+    timelineDom.addTimeline(new Timeline({ ocurrences: [] }))
+    timelineDom.addTimeline(new Timeline({ ocurrences: [] }))
     timelineDom.redraw()
 
     const secondOnRenderTriggerPayload = onRenderMock.mock.calls[1][0]
@@ -136,30 +136,30 @@ describe('TimelineDOM', () => {
 
   test('If timeline is removed and redraw method is called, that timeline should be not included of the onRender payload', () => {
     // Note: Add timeline with 3 elements to check is not present after remove.
-    const items = [
+    const ocurrences = [
       {
         id: 1,
-        ocurrence: {
+        range: {
           start: Date.now() + 50,
           end: Date.now() + 100,
         },
       },
       {
         id: 2,
-        ocurrence: {
+        range: {
           start: Date.now() + 100,
           end: Date.now() + 150,
         },
       },
       {
         id: 3,
-        ocurrence: {
+        range: {
           start: Date.now() + 150,
           end: Date.now() + 200,
         },
       },
     ]
-    timelineDom.addTimeline(new Timeline({ items }))
+    timelineDom.addTimeline(new Timeline({ ocurrences }))
     timelineDom.redraw()
 
     const firstOnRenderTriggerPayload = onRenderMock.mock.calls[0][0]

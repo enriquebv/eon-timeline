@@ -1,4 +1,4 @@
-.eon-timeline.units .eon-timeline-item {
+.eon-timeline.units .eon-timeline-ocurrence {
   margin: 0;
   height: 25px;
   line-height: 24px;
@@ -6,7 +6,7 @@
   color: #2c3e50;
 }
 
-.eon-timeline.units .eon-timeline-item .event-timeline-time-event {
+.eon-timeline.units .eon-timeline-ocurrence .unit-ocurrence {
   font-weight: bold;
   border-right: 1px solid #7f8c8d;
   border-bottom: 1px solid #7f8c8d;

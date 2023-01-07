@@ -1,7 +1,7 @@
-export class EventEmitter<Event = { string: any }> {
-  private listeners: Record<string, ((payload: Event[keyof Event]) => void)[]> = {}
+export class OcurrenceEmitter<Ocurrence = { string: any }> {
+  private listeners: Record<string, ((payload: Ocurrence[keyof Ocurrence]) => void)[]> = {}
 
-  emit<Topic extends keyof Event>(topic: Topic, payload?: Event[Topic]) {
+  emit<Topic extends keyof Ocurrence>(topic: Topic, payload?: Ocurrence[Topic]) {
     const listeners = this.listeners[topic as string]
 
     if (!listeners || listeners.length === 0) return
@@ -9,7 +9,7 @@ export class EventEmitter<Event = { string: any }> {
     listeners.forEach((listener) => listener(payload as any))
   }
 
-  on<Topic extends keyof Event>(topic: Topic, callbackReference: (payload: Event[Topic]) => void) {
+  on<Topic extends keyof Ocurrence>(topic: Topic, callbackReference: (payload: Ocurrence[Topic]) => void) {
     if (!this.listeners[topic as string]) {
       this.listeners[topic as string] = []
     }
@@ -17,7 +17,7 @@ export class EventEmitter<Event = { string: any }> {
     this.listeners[topic as string].push(callbackReference as any)
   }
 
-  off(topic: keyof Event, callbackReference: (payload: Event[keyof Event]) => void) {
+  off(topic: keyof Ocurrence, callbackReference: (payload: Ocurrence[keyof Ocurrence]) => void) {
     const callbacks = this.listeners[topic as string]
 
     if (callbacks?.length === 0) return

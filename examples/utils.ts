@@ -1,6 +1,6 @@
-const ITEMS_COUNT = 10_000
+const OCURRENCES_COUNT = 10_000
 
-export interface EventsExampleOptions {
+export interface OcurrencesExampleOptions {
   gapRangeInMinutes: {
     min: number
     max: number
@@ -13,22 +13,22 @@ export interface EventsExampleOptions {
 
 export const getNumberBetween = (min: number, max: number) => Math.max(min, Math.floor(Math.random() * max))
 
-export function makeRandomItem() {
+export function makeRandomOcurrence() {
   const now = Date.now()
   const start = now + 1000 * 60 * Math.floor(Math.random() * 10)
   const end = start + 1000 * 60 * Math.floor(Math.random() * 30)
 
   return {
     id: now,
-    ocurrence: { start, end },
+    range: { start, end },
   }
 }
 
-export function makeRandomItemCollection(options: EventsExampleOptions) {
-  const items: any = []
+export function makeRandomOcurrenceCollection(options: OcurrencesExampleOptions) {
+  const ocurrences: any = []
   let lastStart: number = Date.now()
 
-  for (let index = 0; index < ITEMS_COUNT; index++) {
+  for (let index = 0; index < OCURRENCES_COUNT; index++) {
     const start = new Date(lastStart)
     const minutesGap =
       index === 0
@@ -44,16 +44,16 @@ export function makeRandomItemCollection(options: EventsExampleOptions) {
 
     lastStart = end.valueOf()
 
-    items.push({
-      id: items.length + 1,
-      ocurrence: {
+    ocurrences.push({
+      id: ocurrences.length + 1,
+      range: {
         start: start.valueOf(),
         end: end.valueOf(),
       },
     })
   }
 
-  return items
+  return ocurrences
 }
 
-export default makeRandomItemCollection
+export default makeRandomOcurrenceCollection

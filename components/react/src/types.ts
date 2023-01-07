@@ -1,14 +1,14 @@
-import { Item, Timeline } from '@eon-timeline/core'
+import { Ocurrence, Timeline } from '@eon-timeline/core'
 
-export interface EonTimelineDOMItemSizes {
+export interface EonTimelineDOMOcurrenceSizes {
   width: number
   startOffset: number
 }
 
-export interface EonTimelineItemProps<Data = undefined> {
-  item: Data extends undefined ? Item & { data?: undefined } : Item & { data?: Data }
+export interface EonTimelineOcurrenceProps<Data = undefined> {
+  ocurrence: Data extends undefined ? Ocurrence & { data?: undefined } : Ocurrence & { data?: Data }
   timeline: Timeline
-  sizes: EonTimelineDOMItemSizes
+  sizes: EonTimelineDOMOcurrenceSizes
 }
 
-export type EonTimelineUnitItemProps = EonTimelineItemProps<{ isUnitItem: true }>
+export type EonTimelineUnitOcurrenceProps = EonTimelineOcurrenceProps<{ isUnitOcurrence: true }>

@@ -37,7 +37,7 @@
   color: #888;
 }
 
-.eon-timeline-item {
+.eon-timeline-ocurrence {
   font-size: 10px;
   line-height: 15px;
 }
@@ -45,7 +45,7 @@
 .controls {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-ocurrences: center;
   justify-content: space-around;
 }
 

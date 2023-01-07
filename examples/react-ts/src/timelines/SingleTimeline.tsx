@@ -1,10 +1,10 @@
 import { Timeline } from '@eon-timeline/core'
 import { EonTimeline } from '@eon-timeline/react'
 import { useEffect, useState } from 'react'
-import makeRandomItemCollection from '../../../utils'
+import makeRandomOcurrenceCollection from '../../../utils'
 import { ExampleProps, RANGES_PER_UNIT } from './shared'
 
-const items = makeRandomItemCollection({
+const ocurrences = makeRandomOcurrenceCollection({
   gapRangeInMinutes: {
     min: 1,
     max: 5,
@@ -15,7 +15,7 @@ const items = makeRandomItemCollection({
   },
 })
 
-const timeline = new Timeline({ items })
+const timeline = new Timeline({ ocurrences })
 
 export default function SingleTimeline(props: ExampleProps) {
   const [range, setRange] = useState(RANGES_PER_UNIT[props.rangeUnit])

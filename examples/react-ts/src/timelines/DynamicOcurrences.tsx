@@ -1,35 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Timeline, TimelineDOM } from '@eon-timeline/core'
-import { EonTimeline, EonTimelineItemProps, EonTimelineLane } from '@eon-timeline/react'
-import { makeItemsCollection, RANGES_PER_UNIT } from './shared'
+import { EonTimeline, EonTimelineOcurrenceProps, EonTimelineLane } from '@eon-timeline/react'
+import { makeOcurrencesCollection, RANGES_PER_UNIT } from './shared'
 import './TimelinesWithUnits.css' // <- Styles of units
 import { getNumberBetween } from '../../../utils'
 
 const timelines = [
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
 ]
 
 const colors = ['#1abc9c', '#2ecc71', '#9b59b6', '#f1c40f', '#f39c12', '#c0392b']
 
-const EventComponent = React.memo(
-  function EventComponent(props: EonTimelineItemProps<{ realtime: true }>) {
-    if (!props.item.data?.realtime) {
+const OcurrenceComponent = React.memo(
+  function OcurrenceComponent(props: EonTimelineOcurrenceProps<{ realtime: true }>) {
+    if (!props.ocurrence.data?.realtime) {
       return null
     }
 
     return <div style={{ backgroundColor: colors[getNumberBetween(0, colors.length)], height: 15 }} />
   },
   () => {
-    // Note: You can control when event renders here! More info: https://reactjs.org/docs/react-api.html#reactmemo
+    // Note: You can control when ocurrence renders here! More info: https://reactjs.org/docs/react-api.html#reactmemo
     return true
   }
 )
 
-export default function DynamicEvents() {
+export default function DynamicOcurrences() {
   const [range, setRange] = useState(RANGES_PER_UNIT.hour)
   const timelineDomRef = useRef<TimelineDOM>(null)
   const [realtimeStatus, setRealtimeStatus] = useState<'running' | 'stopped'>('running')
@@ -43,9 +43,9 @@ export default function DynamicEvents() {
       const timeline = timelines[randomTimelineIndex]
       const offsetStartMinutes = getNumberBetween(10, 30)
 
-      timeline.addItem({
-        id: timeline.getTimelineEvents().length + 1,
-        ocurrence: {
+      timeline.addOcurrence({
+        id: timeline.getTimelineOcurrences().length + 1,
+        range: {
           start: Date.now() + 60_000 * offsetStartMinutes,
           end: Date.now() + 60_000 * (offsetStartMinutes + getNumberBetween(5, 30)),
         },
@@ -71,7 +71,7 @@ export default function DynamicEvents() {
     <div className='timeline-with-units'>
       <EonTimeline timelineDomRef={timelineDomRef} range={range} timelines={timelines} onRangeChange={setRange}>
         {timelines.map((timeline) => (
-          <EonTimelineLane timeline={timeline} EventComponent={EventComponent} />
+          <EonTimelineLane timeline={timeline} OcurrenceComponent={OcurrenceComponent} />
         ))}
       </EonTimeline>
       <div className='controls'>

@@ -1,19 +1,19 @@
 import { Timeline } from './timeline'
-import type { Item, Range } from '../types'
+import type { Ocurrence, Range } from '../types'
 
 import Hammer, { DIRECTION_HORIZONTAL } from 'hammerjs'
-import { EventEmitter } from './event-emitter'
+import { OcurrenceEmitter } from './event-emitter'
 
 export interface TimelineDOMOptions {
   range: Range
   container: HTMLElement
   timelines: Timeline[]
-  onRender(items: TimelineDOMItem[][]): void
+  onRender(timelienDomOcurrences: TimelineOcurrenceDOM[][]): void
   customResizeObserver?: any
 }
 
-export interface TimelineDOMItem {
-  item: Item
+export interface TimelineOcurrenceDOM {
+  ocurrence: Ocurrence
   timeline: Timeline
   width: number
   startOffset: number
@@ -37,10 +37,10 @@ export class MissingOnRenderFunction extends Error {
   }
 }
 
-export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
+export class TimelineDOM extends OcurrenceEmitter<{ 'range-change': Range }> {
   private container: HTMLElement
   private timelines: Timeline[] = []
-  private renderCallback: (items: TimelineDOMItem[][]) => void
+  private renderCallback: (timelineDomOcurrences: TimelineOcurrenceDOM[][]) => void
   private ResizeObserver: any
   private millisecondsPerPixel: number | null = null
   private previousTimelineStartReference: number | null = null
@@ -62,8 +62,8 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
 
     options.timelines.forEach(this.registerTimeline.bind(this))
     this.computeMillisecondsPerPixel()
-    this.setupPanEvents()
-    this.setupResizeEvents()
+    this.setupPanOcurrences()
+    this.setupResizeOcurrences()
     this.redraw = this.emitRenderCallback.bind(this)
   }
 
@@ -109,7 +109,7 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
     this.millisecondsPerPixel = this.sharedTimespan / width
   }
 
-  private setupPanEvents() {
+  private setupPanOcurrences() {
     const hammer = new Hammer.Manager(this.container)
     const horizontalPan = new Hammer.Pan({ direction: DIRECTION_HORIZONTAL })
 
@@ -131,7 +131,7 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
     })
   }
 
-  setupResizeEvents() {
+  setupResizeOcurrences() {
     const ResizeObserver = this.ResizeObserver as typeof window.ResizeObserver
 
     const resizeObserver = new ResizeObserver(([entry]) => {
@@ -177,15 +177,15 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
   }
 
   private emitRenderCallback() {
-    const result: TimelineDOMItem[][] = []
+    const result: TimelineOcurrenceDOM[][] = []
 
     for (const timeline of this.timelines) {
       const timelineStart = timeline.range?.start as number
 
-      const timelineResult: TimelineDOMItem[] = []
+      const timelineResult: TimelineOcurrenceDOM[] = []
 
-      for (const itemInRange of timeline.getItemsInRange()) {
-        const { itemReference, end, start } = itemInRange
+      for (const ocurrenceInRange of timeline.getOcurrencesInRange()) {
+        const { ocurrence, end, start } = ocurrenceInRange
         const duration = end - start
         const msFromTimelineStart = start - timelineStart
         const width = duration / (this.millisecondsPerPixel as number)
@@ -194,7 +194,7 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
         timelineResult.push({
           width,
           timeline: timeline,
-          item: itemReference,
+          ocurrence,
           startOffset: startPxOffset,
         })
       }
@@ -205,15 +205,15 @@ export class TimelineDOM extends EventEmitter<{ 'range-change': Range }> {
     this.renderCallback(result)
   }
 
-  static getItemStyleFromDomItem(item: TimelineDOMItem): {
+  static getOcurrenceStyleFromOcurrenceDOM(timelineDomOcurrence: TimelineOcurrenceDOM): {
     position: 'absolute'
     left: `${number}px`
     width: `${number}px`
   } {
     return {
       position: 'absolute',
-      left: `${item.startOffset}px`,
-      width: `${item.width}px`,
+      left: `${timelineDomOcurrence.startOffset}px`,
+      width: `${timelineDomOcurrence.width}px`,
     }
   }
 }

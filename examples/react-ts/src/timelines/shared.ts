@@ -1,5 +1,5 @@
 import { Range } from '@eon-timeline/core'
-import makeRandomItemCollection from '../../../utils'
+import makeRandomOcurrenceCollection from '../../../utils'
 
 export type ExampleRangeUnit = 'minute' | 'hour' | 'day'
 
@@ -12,8 +12,8 @@ export const RANGES_PER_UNIT: Record<ExampleRangeUnit, Range> = {
 
 export type ExampleProps = { rangeUnit: ExampleRangeUnit }
 
-export function makeItemsCollection() {
-  return makeRandomItemCollection({
+export function makeOcurrencesCollection() {
+  return makeRandomOcurrenceCollection({
     gapRangeInMinutes: {
       min: 1,
       max: 5,

@@ -1,5 +1,5 @@
-import { ItemNotFoundWithId, Timeline } from './timeline'
-import { Item, ItemWithData, Range } from '../types'
+import { OcurrenceNotFoundWithId, Timeline } from './timeline'
+import { Ocurrence, Range } from '../types'
 
 const DEFAULT_TIMESTAMP = 1640995200000
 const HOUR_IN_MILLISECONDS = 3_600_000
@@ -8,17 +8,17 @@ const DEFAULT_RANGE = {
   end: DEFAULT_TIMESTAMP + HOUR_IN_MILLISECONDS * 24,
 }
 
-const FIRST_EXAMPLE_ITEM: Item = {
+const FIRST_EXAMPLE_OCURRENCE: Ocurrence = {
   id: 1,
-  ocurrence: {
+  range: {
     start: DEFAULT_TIMESTAMP,
     end: DEFAULT_TIMESTAMP + 1000,
   },
 }
 
-const SECOND_EXAMPLE_ITEM: Item = {
+const SECOND_EXAMPLE_ITEM: Ocurrence = {
   id: 2,
-  ocurrence: {
+  range: {
     start: DEFAULT_TIMESTAMP + 1000,
     end: DEFAULT_TIMESTAMP + 5000,
   },
@@ -29,58 +29,60 @@ describe('Timeline', () => {
 
   beforeEach(() => {
     timeline = new Timeline({
-      items: [],
+      ocurrences: [],
       range: DEFAULT_RANGE,
     })
   })
 
-  test('Items added by constructor are correctly registered', () => {
+  test('Ocurrences added by constructor are correctly registered', () => {
     timeline = new Timeline({
-      items: [FIRST_EXAMPLE_ITEM],
+      ocurrences: [FIRST_EXAMPLE_OCURRENCE],
     })
 
-    expect(timeline.getItem(1)).not.toBeUndefined()
+    expect(timeline.getTimelineOcurrence(1)).not.toBeUndefined()
   })
 
-  test('.addItem() method correctly registers item', () => {
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
+  test('.addOcurrence() method correctly registers ocurrence', () => {
+    timeline.addOcurrence(FIRST_EXAMPLE_OCURRENCE)
 
-    expect(timeline.getItem(1)).not.toBeUndefined()
+    expect(timeline.getTimelineOcurrence(1)).not.toBeUndefined()
   })
 
-  test(".updateItem() method throws ItemNotFoundWithId if item don't exists in timeline.", () => {
-    expect(() => timeline.updateItem(FIRST_EXAMPLE_ITEM)).toThrow(ItemNotFoundWithId)
+  test(".updateOcurrence() method throws OcurrenceNotFoundWithId if ocurrence don't exists in timeline.", () => {
+    expect(() => timeline.updateOcurrence(FIRST_EXAMPLE_OCURRENCE)).toThrow(OcurrenceNotFoundWithId)
   })
 
-  test('.updateItem() method correctly updates item', () => {
-    type ItemData = { customProperty: number }
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
+  test('.updateOcurrence() method correctly updates ocurrence', () => {
+    type OcurrenceData = { customProperty: number }
+    timeline.addOcurrence(FIRST_EXAMPLE_OCURRENCE)
 
-    const timelineItem = timeline.getItem(1)
+    const timelineOcurrence = timeline.getTimelineOcurrence(1)
 
-    expect((timelineItem as any).itemReference.data?.customProperty).toBeUndefined()
+    expect((timelineOcurrence as any).ocurrence.data?.customProperty).toBeUndefined()
 
-    const UPDATED_ITEM: ItemWithData<ItemData> = {
-      ...FIRST_EXAMPLE_ITEM,
+    const UPDATED_OCURRENCE: Ocurrence<OcurrenceData> = {
+      ...FIRST_EXAMPLE_OCURRENCE,
       data: { customProperty: Math.random() },
     }
-    timeline.updateItem(UPDATED_ITEM)
+    timeline.updateOcurrence(UPDATED_OCURRENCE)
 
-    expect(timeline.getItem<ItemData>(1)?.itemReference.data.customProperty).not.toBeUndefined()
-    expect(timeline.getItem<ItemData>(1)?.itemReference.data.customProperty).toBe(UPDATED_ITEM.data.customProperty)
+    expect(timeline.getTimelineOcurrence<OcurrenceData>(1)?.ocurrence.data?.customProperty).not.toBeUndefined()
+    expect(timeline.getTimelineOcurrence<OcurrenceData>(1)?.ocurrence.data?.customProperty).toBe(
+      UPDATED_OCURRENCE.data?.customProperty
+    )
   })
 
-  test('.removeItem() is defined', () => {
-    expect(timeline.removeItem).not.toBeUndefined()
+  test('.removeOcurrence() is defined', () => {
+    expect(timeline.removeOcurrence).not.toBeUndefined()
   })
 
-  test('.removeItem() method correctly removes item', () => {
-    expect(() => timeline.removeItem(1)).toThrow(ItemNotFoundWithId)
+  test('.removeOcurrence() method correctly removes ocurrence', () => {
+    expect(() => timeline.removeOcurrence(1)).toThrow(OcurrenceNotFoundWithId)
 
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
-    timeline.removeItem(1)
+    timeline.addOcurrence(FIRST_EXAMPLE_OCURRENCE)
+    timeline.removeOcurrence(1)
 
-    expect(timeline.getItem(1)).toBeUndefined()
+    expect(timeline.getTimelineOcurrence(1)).toBeUndefined()
   })
 
   test('.setRange() method modifies internal values', () => {
@@ -94,62 +96,62 @@ describe('Timeline', () => {
     expect(timeline.timespan).toBe(40_000)
   })
 
-  test('.getItemsInRange method returns an array of items', () => {
-    expect(timeline.getItemsInRange()).toBeInstanceOf(Array)
+  test('.getOcurrencesInRange method returns an array of ocurrences', () => {
+    expect(timeline.getOcurrencesInRange()).toBeInstanceOf(Array)
   })
 
-  test('.itemsRange property without items is null', () => {
-    expect(timeline.itemsRange).toBeNull()
+  test('.ocurrencesRange property without ocurrences is null', () => {
+    expect(timeline.ocurrencesRange).toBeNull()
   })
 
-  test('.itemsRange property with items is not null', () => {
-    timeline.addItem(FIRST_EXAMPLE_ITEM)
-    expect(timeline.itemsRange).not.toBeNull()
+  test('.ocurrencesRange property with ocurrences is not null', () => {
+    timeline.addOcurrence(FIRST_EXAMPLE_OCURRENCE)
+    expect(timeline.ocurrencesRange).not.toBeNull()
   })
 
-  test('.itemsRange property should contain correct range adding single item in constructor', () => {
+  test('.ocurrencesRange property should contain correct range adding single ocurrence in constructor', () => {
     timeline = new Timeline({
       range: DEFAULT_RANGE,
-      items: [FIRST_EXAMPLE_ITEM],
+      ocurrences: [FIRST_EXAMPLE_OCURRENCE],
     })
 
-    expect((timeline.itemsRange as Range).start).toBe(FIRST_EXAMPLE_ITEM.ocurrence.start)
-    expect((timeline.itemsRange as Range).end).toBe(FIRST_EXAMPLE_ITEM.ocurrence.end)
+    expect((timeline.ocurrencesRange as Range).start).toBe(FIRST_EXAMPLE_OCURRENCE.range.start)
+    expect((timeline.ocurrencesRange as Range).end).toBe(FIRST_EXAMPLE_OCURRENCE.range.end)
   })
 
-  test('.itemsRange property should contain correct range adding multiple item in constructor', () => {
+  test('.ocurrencesRange property should contain correct range adding multiple ocurrence in constructor', () => {
     timeline = new Timeline({
       range: DEFAULT_RANGE,
-      items: [FIRST_EXAMPLE_ITEM, SECOND_EXAMPLE_ITEM],
+      ocurrences: [FIRST_EXAMPLE_OCURRENCE, SECOND_EXAMPLE_ITEM],
     })
 
-    expect((timeline.itemsRange as Range).start).toBe(FIRST_EXAMPLE_ITEM.ocurrence.start)
-    expect((timeline.itemsRange as Range).end).toBe(SECOND_EXAMPLE_ITEM.ocurrence.end)
+    expect((timeline.ocurrencesRange as Range).start).toBe(FIRST_EXAMPLE_OCURRENCE.range.start)
+    expect((timeline.ocurrencesRange as Range).end).toBe(SECOND_EXAMPLE_ITEM.range.end)
   })
 
-  test('.itemsRange property should contain correct range adding items', () => {
+  test('.ocurrencesRange property should contain correct range adding ocurrences', () => {
     timeline = new Timeline({
       range: DEFAULT_RANGE,
-      items: [FIRST_EXAMPLE_ITEM],
+      ocurrences: [FIRST_EXAMPLE_OCURRENCE],
     })
 
-    expect((timeline.itemsRange as Range).start).toBe(FIRST_EXAMPLE_ITEM.ocurrence.start)
-    expect((timeline.itemsRange as Range).end).toBe(FIRST_EXAMPLE_ITEM.ocurrence.end)
+    expect((timeline.ocurrencesRange as Range).start).toBe(FIRST_EXAMPLE_OCURRENCE.range.start)
+    expect((timeline.ocurrencesRange as Range).end).toBe(FIRST_EXAMPLE_OCURRENCE.range.end)
 
-    timeline.addItem(SECOND_EXAMPLE_ITEM)
-    expect((timeline.itemsRange as Range).start).toBe(FIRST_EXAMPLE_ITEM.ocurrence.start)
-    expect((timeline.itemsRange as Range).end).toBe(SECOND_EXAMPLE_ITEM.ocurrence.end)
+    timeline.addOcurrence(SECOND_EXAMPLE_ITEM)
+    expect((timeline.ocurrencesRange as Range).start).toBe(FIRST_EXAMPLE_OCURRENCE.range.start)
+    expect((timeline.ocurrencesRange as Range).end).toBe(SECOND_EXAMPLE_ITEM.range.end)
   })
 
-  test('.itemsRange property should contain correct range removing items', () => {
+  test('.ocurrencesRange property should contain correct range removing ocurrences', () => {
     timeline = new Timeline({
       range: DEFAULT_RANGE,
-      items: [FIRST_EXAMPLE_ITEM, SECOND_EXAMPLE_ITEM],
+      ocurrences: [FIRST_EXAMPLE_OCURRENCE, SECOND_EXAMPLE_ITEM],
     })
 
-    timeline.removeItem(SECOND_EXAMPLE_ITEM.id)
+    timeline.removeOcurrence(SECOND_EXAMPLE_ITEM.id)
 
-    expect((timeline.itemsRange as Range).start).toBe(FIRST_EXAMPLE_ITEM.ocurrence.start)
-    expect((timeline.itemsRange as Range).end).toBe(FIRST_EXAMPLE_ITEM.ocurrence.end)
+    expect((timeline.ocurrencesRange as Range).start).toBe(FIRST_EXAMPLE_OCURRENCE.range.start)
+    expect((timeline.ocurrencesRange as Range).end).toBe(FIRST_EXAMPLE_OCURRENCE.range.end)
   })
 })

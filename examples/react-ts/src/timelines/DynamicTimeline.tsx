@@ -1,15 +1,15 @@
 import { useRef, useState } from 'react'
 import { Timeline, TimelineDOM } from '@eon-timeline/core'
 import { EonTimeline } from '@eon-timeline/react'
-import { makeItemsCollection, RANGES_PER_UNIT } from './shared'
+import { makeOcurrencesCollection, RANGES_PER_UNIT } from './shared'
 import './TimelinesWithUnits.css' // <- Styles of units
 
 const timelines = [
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
-  new Timeline({ items: makeItemsCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
+  new Timeline({ ocurrences: makeOcurrencesCollection() }),
 ]
 
 export default function DynamicTimeline() {
@@ -17,7 +17,7 @@ export default function DynamicTimeline() {
   const timelineDomRef = useRef<TimelineDOM>(null)
 
   function handleTimelineAdd() {
-    timelineDomRef.current?.addTimeline(new Timeline({ items: makeItemsCollection() }))
+    timelineDomRef.current?.addTimeline(new Timeline({ ocurrences: makeOcurrencesCollection() }))
     timelineDomRef.current?.redraw()
   }
 

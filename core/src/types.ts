@@ -3,16 +3,8 @@ export interface Range {
   end: number
 }
 
-export interface Item<Data = unknown> {
+export interface Ocurrence<Data = unknown> {
   id: number
-  ocurrence: Range
+  range: Range
   data?: Data
 }
-
-export type ItemWithData<Data> = {
-  id: number
-  ocurrence: Range
-  data: Data
-}
-
-export type TickScale = 'seconds' | 'minutes' | 'hours' | 'days'

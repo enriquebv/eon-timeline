@@ -8,9 +8,9 @@ import SingleTimeline from './timelines/SingleTimeline'
 import MultipleSyncedTimelines from './timelines/MultipleSyncedTimelines'
 import TimlinesWithUnits from './timelines/TimelinesWithUnits'
 import { ExampleRangeUnit } from './timelines/shared'
-import TimelineWithCustomComponent from './timelines/TimelineWithCustomEventComponent'
-import DynamicTimeline from './timelines/DynamicTimelines'
-import DynamicEvents from './timelines/DynamicEvents'
+import TimelineWithCustomComponent from './timelines/TimelineWithCustomOcurrenceComponent'
+import DynamicTimeline from './timelines/DynamicTimeline'
+import DynamicOcurrences from './timelines/DynamicOcurrences'
 
 function App() {
   const [rangeUnit, setRangeUnit] = useState<ExampleRangeUnit>('hour')
@@ -30,7 +30,7 @@ function App() {
           <h3>Multiple synced timelines</h3>
           <MultipleSyncedTimelines rangeUnit={rangeUnit} />
 
-          <h3>Timelines with custom item component</h3>
+          <h3>Timelines with custom ocurrence component</h3>
           <TimelineWithCustomComponent rangeUnit={rangeUnit} />
 
           <div className='controls'>
@@ -47,8 +47,8 @@ function App() {
           <h3>Timelines with units</h3>
           <TimlinesWithUnits />
 
-          <h3>Real-time events</h3>
-          <DynamicEvents />
+          <h3>Real time</h3>
+          <DynamicOcurrences />
 
           <h3>Dynamic add/remove timeline lanes</h3>
           <DynamicTimeline />

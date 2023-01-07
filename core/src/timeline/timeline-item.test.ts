@@ -1,6 +1,6 @@
-import { InvalidOcurrenceRange, TimelineItem } from './timeline-item'
+import { InvalidOcurrenceRange, TimelineOcurrence } from './timeline-ocurrence'
 
-import type { Item, Range } from '../types'
+import type { Ocurrence, Range } from '../types'
 
 const RANGE: Range = {
   start: new Date('2020-01-01T00:00:00.000Z').valueOf(),
@@ -12,56 +12,56 @@ const ITEM_OCURRENCE_RANGE = {
   end: new Date('2020-01-01T17:30:00.000Z').valueOf(),
 }
 
-describe('TimelineDatasetItem', () => {
+describe('TimelineDatasetOcurrence', () => {
   function getDefaults() {
-    const item: Item = {
+    const ocurrence: Ocurrence = {
       id: 1,
-      ocurrence: ITEM_OCURRENCE_RANGE,
+      range: ITEM_OCURRENCE_RANGE,
     }
 
     return {
-      item,
-      datasetItem: new TimelineItem(item),
+      ocurrence,
+      datasetOcurrence: new TimelineOcurrence(ocurrence),
     }
   }
 
-  test('Create a item with invalid range will emit exception InvalidOcurrenceRange', () => {
+  test('Create a ocurrence with invalid range will emit exception InvalidOcurrenceRange', () => {
     const invalidRange: Range = { start: 400, end: 200 }
 
-    expect(() => new TimelineItem({ id: 1, ocurrence: invalidRange })).toThrow(InvalidOcurrenceRange)
+    expect(() => new TimelineOcurrence({ id: 1, range: invalidRange })).toThrow(InvalidOcurrenceRange)
   })
 
-  test('Property itemReference is reference to argument in constructor', () => {
-    const { item, datasetItem } = getDefaults()
+  test('Property ocurrenceReference is reference to argument in constructor', () => {
+    const { ocurrence, datasetOcurrence } = getDefaults()
 
-    expect(datasetItem.itemReference).toEqual(item)
+    expect(datasetOcurrence.ocurrence).toEqual(ocurrence)
   })
 
-  test('Item ocurrence range is correctly stored', () => {
-    const { datasetItem } = getDefaults()
+  test('Ocurrence ocurrence range is correctly stored', () => {
+    const { datasetOcurrence } = getDefaults()
 
-    expect(datasetItem.start).toBe(ITEM_OCURRENCE_RANGE.start)
-    expect(datasetItem.end).toBe(ITEM_OCURRENCE_RANGE.end)
+    expect(datasetOcurrence.start).toBe(ITEM_OCURRENCE_RANGE.start)
+    expect(datasetOcurrence.end).toBe(ITEM_OCURRENCE_RANGE.end)
   })
 
   test('Defines method computeStatusFromRange()', () => {
-    const { datasetItem } = getDefaults()
+    const { datasetOcurrence } = getDefaults()
 
-    expect(typeof datasetItem.computeStatusFromRange).toBe('function')
+    expect(typeof datasetOcurrence.computeStatusFromRange).toBe('function')
   })
 
   test('Method computeStatusFromRange() returns undefined', () => {
-    const { datasetItem } = getDefaults()
+    const { datasetOcurrence } = getDefaults()
 
-    expect(datasetItem.computeStatusFromRange(RANGE)).toBeUndefined()
+    expect(datasetOcurrence.computeStatusFromRange(RANGE)).toBeUndefined()
   })
 
-  test('Method computeStatusFromRange() hydrates public state if item is in range', () => {
-    const { datasetItem } = getDefaults()
+  test('Method computeStatusFromRange() hydrates public state if ocurrence is in range', () => {
+    const { datasetOcurrence } = getDefaults()
 
-    datasetItem.computeStatusFromRange(RANGE)
+    datasetOcurrence.computeStatusFromRange(RANGE)
 
-    expect(datasetItem).toMatchObject({
+    expect(datasetOcurrence).toMatchObject({
       start: expect.any(Number),
       end: expect.any(Number),
       status: expect.objectContaining({
@@ -74,9 +74,9 @@ describe('TimelineDatasetItem', () => {
     })
   })
 
-  test.todo('Set .status.inRange to true if property if item starts before range, and ends inside the range.')
-  test.todo('Set .status.inRange to true property if item starts inside range, and ends inside the range.')
-  test.todo('Set .status.inRange to true property if item starts inside range, and ends after the range.')
-  test.todo('Set .status.inRange to true property if item starts before range, and ends after the range.')
-  test.todo('Method computeStatusFromRange() resets public state if item is not in range')
+  test.todo('Set .status.inRange to true if property if ocurrence starts before range, and ends inside the range.')
+  test.todo('Set .status.inRange to true property if ocurrence starts inside range, and ends inside the range.')
+  test.todo('Set .status.inRange to true property if ocurrence starts inside range, and ends after the range.')
+  test.todo('Set .status.inRange to true property if ocurrence starts before range, and ends after the range.')
+  test.todo('Method computeStatusFromRange() resets public state if ocurrence is not in range')
 })

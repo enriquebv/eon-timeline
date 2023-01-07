@@ -1,3 +1,3 @@
 export * from './timeline'
 export * from './timeline-dom'
-export * from './timeline-item'
+export * from './timeline-ocurrence'

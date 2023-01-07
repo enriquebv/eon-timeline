@@ -1,5 +1,5 @@
-import type { Item, Range } from '../types'
-import { TimelineItem } from './timeline-item'
+import type { Ocurrence, Range } from '../types'
+import { TimelineOcurrence } from './timeline-ocurrence'
 
 export class MissingRange extends Error {
   constructor() {
@@ -7,116 +7,114 @@ export class MissingRange extends Error {
   }
 }
 
-export class ItemNotFoundWithId extends Error {
+export class OcurrenceNotFoundWithId extends Error {
   constructor(id: number | string) {
-    super(`Item not found with id "${id}".`)
+    super(`Ocurrence not found with id "${id}".`)
   }
 }
 
 export class Timeline {
-  private items: Map<string | number, TimelineItem> = new Map()
+  private ocurrences: Map<string | number, TimelineOcurrence> = new Map()
   range?: Range
   timespan?: number
-  addItem: (item: Item) => void
-  updateItem: (item: Item) => void
-  itemsRange: Range | null = null
+  addOcurrence: (ocurrence: Ocurrence) => void
+  updateOcurrence: (ocurrence: Ocurrence) => void
+  ocurrencesRange: Range | null = null
 
-  constructor(options: { items: Item[]; range?: Range }) {
+  constructor(options: { ocurrences: Ocurrence[]; range?: Range }) {
     if (options.range) {
       this.range = { start: options.range.start, end: options.range.end }
       this.timespan = options.range.end - options.range.start
     }
 
-    for (const item of options.items) {
-      this.registerItem('add', item)
+    for (const ocurrence of options.ocurrences) {
+      this.registerOcurrence('add', ocurrence)
     }
 
-    this.addItem = this.registerItem.bind(this, 'add')
-    this.updateItem = this.registerItem.bind(this, 'update')
+    this.addOcurrence = this.registerOcurrence.bind(this, 'add')
+    this.updateOcurrence = this.registerOcurrence.bind(this, 'update')
     this.calculate = this.calculate.bind(this)
   }
 
-  getItem<Data = undefined>(
-    id: string | number
-  ): (Data extends undefined ? TimelineItem : TimelineItem & { itemReference: { data: Data } }) | undefined {
-    return this.items.get(id) as any
+  getTimelineOcurrence<Data = unknown>(id: string | number): TimelineOcurrence<Data> {
+    return this.ocurrences.get(id) as any
   }
 
-  private registerItem(action: 'add' | 'update' = 'add', item: Item) {
-    if (action === 'update' && !this.items.has(item.id)) {
-      throw new ItemNotFoundWithId(item.id)
+  private registerOcurrence(action: 'add' | 'update' = 'add', ocurrence: Ocurrence) {
+    if (action === 'update' && !this.ocurrences.has(ocurrence.id)) {
+      throw new OcurrenceNotFoundWithId(ocurrence.id)
     }
 
-    const timelineItem = new TimelineItem(item)
-    this.items.set(item.id, timelineItem)
+    const timelineOcurrence = new TimelineOcurrence(ocurrence)
+    this.ocurrences.set(ocurrence.id, timelineOcurrence)
 
     if (this.range) {
-      timelineItem.computeStatusFromRange(this.range as Range)
+      timelineOcurrence.computeStatusFromRange(this.range as Range)
     }
 
-    if (this.itemsRange === null) {
-      this.itemsRange = {
-        start: item.ocurrence.start,
-        end: item.ocurrence.end,
+    if (this.ocurrencesRange === null) {
+      this.ocurrencesRange = {
+        start: ocurrence.range.start,
+        end: ocurrence.range.end,
       }
 
       return
     }
 
-    this.itemsRange = {
-      start: Math.min(item.ocurrence.start, this.itemsRange.start),
-      end: Math.max(item.ocurrence.end, this.itemsRange.end),
+    this.ocurrencesRange = {
+      start: Math.min(ocurrence.range.start, this.ocurrencesRange.start),
+      end: Math.max(ocurrence.range.end, this.ocurrencesRange.end),
     }
   }
 
-  removeItem(id: string | number) {
-    if (!this.items.has(id)) throw new ItemNotFoundWithId(id)
+  removeOcurrence(id: string | number) {
+    if (!this.ocurrences.has(id)) throw new OcurrenceNotFoundWithId(id)
 
-    const itemsRange = this.itemsRange as Range
-    const timelineItem = this.items.get(id) as TimelineItem
-    const itemStart = timelineItem.start
-    const itemEnd = timelineItem.end
+    const ocurrencesRange = this.ocurrencesRange as Range
+    const timelineOcurrence = this.ocurrences.get(id) as TimelineOcurrence
+    const ocurrenceStart = timelineOcurrence.start
+    const ocurrenceEnd = timelineOcurrence.end
 
-    this.items.delete(id)
+    this.ocurrences.delete(id)
 
-    const wasItemsRangeStart = itemStart === itemsRange.start
-    const wasItemsRangeEnd = itemEnd === itemsRange.end
-    const needToRecomputeItemsRange = wasItemsRangeStart || wasItemsRangeEnd
+    const wasOcurrencesRangeStart = ocurrenceStart === ocurrencesRange.start
+    const wasOcurrencesRangeEnd = ocurrenceEnd === ocurrencesRange.end
+    const needToRecomputeOcurrencesRange = wasOcurrencesRangeStart || wasOcurrencesRangeEnd
 
-    if (needToRecomputeItemsRange) {
-      const itemsAsArray = [...this.items.values()]
+    if (needToRecomputeOcurrencesRange) {
+      const ocurrencesAsArray = [...this.ocurrences.values()]
 
-      if (wasItemsRangeStart) {
-        itemsRange.start = Math.min(...itemsAsArray.map((item) => item.start))
+      if (wasOcurrencesRangeStart) {
+        ocurrencesRange.start = Math.min(...ocurrencesAsArray.map((ocurrence) => ocurrence.start))
       }
 
-      if (wasItemsRangeEnd) {
-        itemsRange.end = Math.max(...itemsAsArray.map((item) => item.end))
+      if (wasOcurrencesRangeEnd) {
+        ocurrencesRange.end = Math.max(...ocurrencesAsArray.map((ocurrence) => ocurrence.end))
       }
     }
   }
 
-  replaceItems(items: Item[]) {
-    this.items = new Map<string | number, TimelineItem>()
-    items.forEach((item) => this.registerItem('add', item))
+  replaceOcurrences(ocurrences: Ocurrence[]) {
+    this.ocurrences = new Map<string | number, TimelineOcurrence>()
+    ocurrences.forEach((ocurrence) => this.registerOcurrence('add', ocurrence))
   }
 
   calculate() {
     if (!this.range) throw new MissingRange()
 
-    for (let [, item] of this.items) {
-      item.computeStatusFromRange(this.range)
+    for (let [, ocurrence] of this.ocurrences) {
+      ocurrence.computeStatusFromRange(this.range)
     }
   }
 
-  getItemsInRange() {
-    const result = Array.from(this.items.values()).filter((item: any) => item.status.inRange)
+  getOcurrencesInRange() {
+    const result = Array.from(this.ocurrences.values()).filter((ocurrence: any) => ocurrence.status.inRange)
 
     return result
   }
 
-  getTimelineEvents(): TimelineItem[] {
-    return Array.from(this.items.values())
+  getTimelineOcurrences(): TimelineOcurrence[] {
+    return Array.from(this.ocurrences.values())
   }
 
   setRange(range: Range) {

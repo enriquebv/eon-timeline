@@ -16,55 +16,55 @@ const MILLISECOND_UNITS = {
 }
 
 describe('buildUnitsTimeline', () => {
-  test('If range is given, first unit item starts before that range, and last item ends after that range', () => {
-    const unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
-    const firstItem = unitItems[0]
-    const lastUnitItem = unitItems[unitItems.length - 1]
+  test('If range is given, first unit even starts before that range, and last ocurrence ends after that range', () => {
+    const unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
+    const firstOcurrence = unitOcurrences[0]
+    const lastUnitOcurrence = unitOcurrences[unitOcurrences.length - 1]
 
-    expect(firstItem.ocurrence.start).toBeLessThan(EXAMPLE_RANGE.start)
-    expect(lastUnitItem.ocurrence.end).toBeGreaterThan(EXAMPLE_RANGE.end)
+    expect(firstOcurrence.range.start).toBeLessThan(EXAMPLE_RANGE.start)
+    expect(lastUnitOcurrence.range.end).toBeGreaterThan(EXAMPLE_RANGE.end)
   })
 
-  test('If "minute" unit is provided, each item range should be one minute timespan', () => {
-    const unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'minute' })
+  test('If "minute" unit is provided, each ocurrence range should be one minute timespan', () => {
+    const unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'minute' })
 
-    for (const unitItem of unitItems) {
-      expect(unitItem.ocurrence.end - unitItem.ocurrence.start).toBe(MILLISECOND_UNITS.minute)
+    for (const unitOcurrence of unitOcurrences) {
+      expect(unitOcurrence.range.end - unitOcurrence.range.start).toBe(MILLISECOND_UNITS.minute)
     }
   })
 
-  test('If "hour" unit is provided, each item range should be one hour timespan', () => {
-    const unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
+  test('If "hour" unit is provided, each ocurrence range should be one hour timespan', () => {
+    const unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
 
-    for (const unitItem of unitItems) {
-      expect(unitItem.ocurrence.end - unitItem.ocurrence.start).toBe(MILLISECOND_UNITS.hour)
+    for (const unitOcurrence of unitOcurrences) {
+      expect(unitOcurrence.range.end - unitOcurrence.range.start).toBe(MILLISECOND_UNITS.hour)
     }
   })
 
-  test('If "day" unit is provided, each item range should be one day timespan', () => {
-    const unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'day' })
+  test('If "day" unit is provided, each ocurrence range should be one day timespan', () => {
+    const unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'day' })
 
-    for (const unitItem of unitItems) {
-      expect(unitItem.ocurrence.end - unitItem.ocurrence.start).toBe(MILLISECOND_UNITS.day)
+    for (const unitOcurrence of unitOcurrences) {
+      expect(unitOcurrence.range.end - unitOcurrence.range.start).toBe(MILLISECOND_UNITS.day)
     }
   })
 
-  test('If unit and unitScale are provided, each item range timespan should be modified to represent that scale', () => {
-    const unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour', unitScale: 2 })
+  test('If unit and unitScale are provided, each ocurrence range timespan should be modified to represent that scale', () => {
+    const unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour', unitScale: 2 })
     const expectedTimespan = MILLISECOND_UNITS.hour * 2
 
-    for (const unitItem of unitItems) {
-      expect(unitItem.ocurrence.end - unitItem.ocurrence.start).toBe(expectedTimespan)
+    for (const unitOcurrence of unitOcurrences) {
+      expect(unitOcurrence.range.end - unitOcurrence.range.start).toBe(expectedTimespan)
     }
   })
 
-  test('Second item range must start where previous item range ends', () => {
-    let unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
+  test('Second ocurrence range must start where previous ocurrence range ends', () => {
+    let unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour' })
 
-    expect(unitItems[1].ocurrence.start).toBe(unitItems[0].ocurrence.end)
+    expect(unitOcurrences[1].range.start).toBe(unitOcurrences[0].range.end)
 
-    unitItems = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour', unitScale: 2 })
+    unitOcurrences = buildUnitsTimeline({ range: EXAMPLE_RANGE, unit: 'hour', unitScale: 2 })
 
-    expect(unitItems[1].ocurrence.start).toBe(unitItems[0].ocurrence.end)
+    expect(unitOcurrences[1].range.start).toBe(unitOcurrences[0].range.end)
   })
 })

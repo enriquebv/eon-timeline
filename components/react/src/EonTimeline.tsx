@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 
-import { Timeline, TimelineDOM, TimelineDOMItem, Range } from '@eon-timeline/core'
+import { Timeline, TimelineDOM, TimelineOcurrenceDOM, Range } from '@eon-timeline/core'
 
 import { EonTimelineLane, EonTimelineLaneProps } from './EonTimelineLane'
-import { EonTimelineDOMItemSizes } from './types'
+import { EonTimelineDOMOcurrenceSizes } from './types'
 
 export interface EonTimelineProps extends PropsWithChildren {
   timelines: Timeline[]
@@ -23,7 +23,7 @@ export class InvalidChildren extends Error {
 }
 
 interface EonTimelineState {
-  timelinesDomItems: TimelineDOMItem[][]
+  timelinesDomOcurrences: TimelineOcurrenceDOM[][]
 }
 
 function assignRef<RefType = any>(ref: React.ForwardedRef<RefType>, value: RefType) {
@@ -37,11 +37,10 @@ export default class EonTimeline extends React.Component<EonTimelineProps, EonTi
   timelineDom: TimelineDOM | null = null
 
   constructor(props: Readonly<EonTimelineProps>) {
-    console.log('contruct eon timeline')
     super(props)
 
     this.state = {
-      timelinesDomItems: [],
+      timelinesDomOcurrences: [],
     }
 
     this.checkChildren()
@@ -82,8 +81,8 @@ export default class EonTimeline extends React.Component<EonTimelineProps, EonTi
       container,
       range: this.props.range,
       timelines: this.props.timelines,
-      onRender: (timelinesDomItems: TimelineDOMItem[][]) => {
-        this.setState({ timelinesDomItems })
+      onRender: (timelinesDomOcurrences: TimelineOcurrenceDOM[][]) => {
+        this.setState({ timelinesDomOcurrences })
       },
     })
 
@@ -110,35 +109,35 @@ export default class EonTimeline extends React.Component<EonTimelineProps, EonTi
 
   render() {
     const { props } = this
-    const { timelinesDomItems } = this.state
+    const { timelinesDomOcurrences } = this.state
 
     return (
       <>
         <div ref={(ref) => (this.containerRef = ref)} className={this.props.className}>
-          {timelinesDomItems.map((timelineDomItems, index) => {
+          {timelinesDomOcurrences.map((timelineDomOcurrences, index) => {
             const timeline = props.timelines[index]
             const childLane = this.findChildLane(timeline)
 
             if (childLane) {
-              const { EventComponent, className } = childLane.props
+              const { OcurrenceComponent, className } = childLane.props
 
               return (
                 <div className={['eon-timeline', className || ''].join(' ')} key={index}>
-                  {timelineDomItems.map((timelineDomItem) => (
+                  {timelineDomOcurrences.map((timelineDomOcurrence) => (
                     <div
-                      className='eon-timeline-item'
-                      key={timelineDomItem.item.id}
-                      style={TimelineDOM.getItemStyleFromDomItem(timelineDomItem)}
+                      className='eon-timeline-ocurrence'
+                      key={timelineDomOcurrence.ocurrence.id}
+                      style={TimelineDOM.getOcurrenceStyleFromOcurrenceDOM(timelineDomOcurrence)}
                     >
-                      {EventComponent ? (
-                        <EventComponent
-                          item={timelineDomItem.item as any}
-                          timeline={timelineDomItem.timeline}
+                      {OcurrenceComponent ? (
+                        <OcurrenceComponent
+                          ocurrence={timelineDomOcurrence.ocurrence as any}
+                          timeline={timelineDomOcurrence.timeline}
                           sizes={
                             {
-                              width: timelineDomItem.width,
-                              startOffset: timelineDomItem.startOffset,
-                            } satisfies EonTimelineDOMItemSizes
+                              width: timelineDomOcurrence.width,
+                              startOffset: timelineDomOcurrence.startOffset,
+                            } satisfies EonTimelineDOMOcurrenceSizes
                           }
                         />
                       ) : null}
@@ -150,11 +149,11 @@ export default class EonTimeline extends React.Component<EonTimelineProps, EonTi
 
             return (
               <div className='eon-timeline' key={index}>
-                {timelineDomItems.map((timelineDomItem) => (
+                {timelineDomOcurrences.map((timelineDomOcurrence) => (
                   <div
-                    className='eon-timeline-item'
-                    key={timelineDomItem.item.id}
-                    style={TimelineDOM.getItemStyleFromDomItem(timelineDomItem)}
+                    className='eon-timeline-ocurrence'
+                    key={timelineDomOcurrence.ocurrence.id}
+                    style={TimelineDOM.getOcurrenceStyleFromOcurrenceDOM(timelineDomOcurrence)}
                   />
                 ))}
               </div>
