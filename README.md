@@ -1,5 +1,5 @@
 <p align="center">
-  <b>As can be inferred from the semantic versioning, <code>v1.0</code> has not yet arrived, so do not treat the library yet as if it could be used in production.</b>
+  <b>As can be inferred from the <a target="_blank" href="https://semver.org/#how-should-i-deal-with-revisions-in-the-0yz-initial-development-phase">semantic versioning, <code>v1.0</code> has not yet arrived</a>, so do not treat the library yet as if it could be used in production.</b>
 </p>
 
 <h1 align="center">
