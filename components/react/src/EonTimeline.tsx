@@ -9,7 +9,7 @@ export interface EonTimelineProps extends PropsWithChildren {
   timelines: Timeline[]
   range: Range
   className?: string
-  onRangeChange(range: Range): void
+  onRangeChange?: (range: Range) => void
   timelineDomRef?: React.ForwardedRef<TimelineDOM>
   containerRef?: React.ForwardedRef<HTMLDivElement>
 }
@@ -86,7 +86,7 @@ export default class EonTimeline extends React.Component<EonTimelineProps, EonTi
       },
     })
 
-    timelineDom.on('range-change', this.props.onRangeChange)
+    timelineDom.on('range-change', (range) => this.props.onRangeChange && this.props.onRangeChange(range))
 
     if (this.props.timelineDomRef) {
       assignRef(this.props.timelineDomRef, timelineDom)
