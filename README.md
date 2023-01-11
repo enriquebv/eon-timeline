@@ -18,12 +18,12 @@
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#roadmap">Roadmap</a> •
-  <a href="#credits">Credits</a> •
   <a href="#license">License</a>
 </p>
 
 ## Key Features
 
+- **Simplicity**: This library will just render timeline lanes, and ocurrences. You can extend the library to create your own timeline experience.
 - **Flexibility**: The main target of this library, allow you to create your own timeline experience.
 - **Headless**: Core package contains logic to compute ocurrence status, and a DOM adapter to transform that status to valid CSS position.
 - **Pre-built components**: Even the core being headless, you can use pre-built [components](./components/) to save time.
