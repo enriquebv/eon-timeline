@@ -143,6 +143,7 @@ export default function SingleTimeline() {
 
 <!-- tabs:end -->
 
-[🧑🏻‍💻 Play with advanced example in CodeSandbox.](https://codesandbox.io/s/eon-timeline-react-typescript-3ogq9z?file=/src/App.tsx)
+- [🧑🏻‍💻 Play with this example in CodeSandbox.](https://codesandbox.io/s/eon-timeline-react-typescript-forked-58ncfs?file=/src/App.tsx)
+- [🧑🏻‍💻 Play with and advanced example in CodeSandbox.](https://codesandbox.io/s/eon-timeline-react-typescript-3ogq9z?file=/src/App.tsx)
 
 ## Render using TimelineDOM

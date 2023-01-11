@@ -1,3 +1,7 @@
+<p align="center">
+  <b>As can be inferred from the semantic versioning, <code>v1.0</code> has not yet arrived, so do not treat the library yet as if it could be used in production.</b>
+</p>
+
 <h1 align="center">
   <br>
   eon-timeline
@@ -27,12 +31,7 @@
 - **Update timelines in real-time**: Add, remove and update ocurrences from timelines.
 - **Virtualized time navigation**: Pans timeline left and right to view past or future (respectively). DOM adapter will just take care of visible ocurrences, so you can store thousands of ocurrences.
 
-### Coming soon features:
-
-- SSR support.
-- Pre-built components to most used UI libraries/frameworks:
-  - Svelte
-- Pre-built canvas implementation.
+[Coming soon features.](#v110)
 
 ## How To Use
 
