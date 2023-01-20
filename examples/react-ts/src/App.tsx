@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import './App.css'
 import '@eon-timeline/core/dist/styles.css'
-import reactLogo from './assets/react.svg'
 
 import SingleTimeline from './timelines/SingleTimeline'
 import MultipleSyncedTimelines from './timelines/MultipleSyncedTimelines'
@@ -17,10 +16,16 @@ function App() {
 
   return (
     <div className='App'>
-      <div>
-        <img src={reactLogo} className='logo' alt='React logo' />
-      </div>
-      <h1>eon-timeline + React</h1>
+      <h1>eon-timeline</h1>
+
+      <ul className='example-links'>
+        <li>
+          <a href='./docs'>Docs</a>
+        </li>
+        <li>
+          <a href='https://github.com/enriquebv/eon-timeline'>GitHub</a>
+        </li>
+      </ul>
 
       <div className='panels'>
         <div>

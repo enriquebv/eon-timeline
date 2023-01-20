@@ -63,3 +63,23 @@
 .panels > div {
   padding: 20px;
 }
+
+.example-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+
+.example-links li {
+  padding: 0px 20px;
+  font-weight: bold;
+}
+
+.example-links li a {
+  font-weight: bold;
+}
+
+.example-links li a:hover {
+  text-decoration: underline;
+}
