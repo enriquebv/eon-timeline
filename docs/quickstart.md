@@ -147,3 +147,71 @@ export default function SingleTimeline() {
 - [🧑🏻‍💻 Play with and advanced example in CodeSandbox.](https://codesandbox.io/s/eon-timeline-react-typescript-3ogq9z?file=/src/App.tsx)
 
 ## Render using TimelineDOM
+
+<!-- tabs:start -->
+
+#### **TypeScript**
+
+```ts
+import { Timeline, TimelineDOM, TimelineOcurrenceDOM } from '@eon-timeline/core'
+
+const container: HTMLDivElement = document.getElementById('timeline-container')
+const timelines: Timeline[] = [timeline]
+
+// This callback will be executed every time timeline needs to redraw.
+function onRender(timelineDomLanes: TimelineOcurrenceDOM[][]) {
+  timelineDomLanes.forEach((domOcurrences) => {
+    // Each item in this level represent one timeline.
+
+    domOcurrences.forEach((domOcurrence) => {
+      // Each item in this level represent one ocurrence.
+      // Contains DOM position of each item.
+
+      console.log(domOcurrence.ocurrence) // Ocurrence object.
+      console.log(domOcurrence.timeline) // Timeline parent object.
+      console.log(domOcurrence.width) // Width of ocurrence in pixels.
+      console.log(domOcurrence.startOffset) // Offset from left of the container in pixels.
+    })
+  })
+}
+
+const timelineDom = new TimelineDOM({ range, container, timelines, onRender })
+```
+
+#### **JavaScript**
+
+```js
+import { Timeline, TimelineDOM, TimelineOcurrenceDOM } from '@eon-timeline/core'
+
+const container = document.getElementById('timeline-container')
+const timelines = [timeline]
+
+// This callback will be executed every time timeline needs to redraw.
+function onRender(timelineDomLanes) {
+  timelineDomLanes.forEach((domOcurrences) => {
+    // Each item in this level represent one timeline.
+
+    domOcurrences.forEach((domOcurrence) => {
+      // Each item in this level represent one ocurrence.
+      // Contains DOM position of each item.
+
+      console.log(domOcurrence.ocurrence) // Ocurrence object.
+      console.log(domOcurrence.timeline) // Timeline parent object.
+      console.log(domOcurrence.width) // Width of ocurrence in pixels.
+      console.log(domOcurrence.startOffset) // Offset from left of the container in pixels.
+    })
+  })
+}
+
+const timelineDom = new TimelineDOM({ range, container, timelines, onRender })
+```
+
+<!-- tabs:end -->
+
+```html
+<div id="timeline-container">
+  <!-- Implement your code here to render timeline lanes and ocurrences -->
+</div>
+```
+
+[TimelineDOM API](.).
