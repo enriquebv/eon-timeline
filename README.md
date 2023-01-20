@@ -37,8 +37,7 @@
 
 ## How To Use
 
-- How to use [@eon-timeline/core](./core/README.md).
-- How to use [@eon-timeline/react](./components/react/README.md).
+Check [Quick start](https://enriquebv.github.io/eon-timeline/docs/#/quickstart?id=quick-start) guide.
 
 ## Roadmap
 
