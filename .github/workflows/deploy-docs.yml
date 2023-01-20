@@ -39,7 +39,7 @@ jobs:
       - name: Build react example
         run: BASE_URL=./ yarn workspace eon-timeline-react-example build
       - name: Build react example
-        run: mkdir ./docs/examples && cp -r ./examples/react-ts/dist ./docs/examples
+        run: mkdir ./docs/examples && cp -r ./examples/react-ts/dist/ ./docs/examples
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
