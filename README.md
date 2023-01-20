@@ -15,6 +15,8 @@
 </p>
 
 <p align="center">
+  <a href="https://enriquebv.github.io/eon-timeline/docs">Docs</a> •
+  <a href="https://enriquebv.github.io/eon-timeline/">Example</a> •
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#roadmap">Roadmap</a> •
