@@ -4,7 +4,7 @@ export interface Range {
 }
 
 export interface Ocurrence<Data = unknown> {
-  id: number
+  id: number | string
   range: Range
   data?: Data
 }
