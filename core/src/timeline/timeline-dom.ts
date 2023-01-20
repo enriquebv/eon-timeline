@@ -8,7 +8,7 @@ export interface TimelineDOMOptions {
   range: Range
   container: HTMLElement
   timelines: Timeline[]
-  onRender(timelienDomOcurrences: TimelineOcurrenceDOM[][]): void
+  onRender(timelineDomOcurrences: TimelineOcurrenceDOM[][]): void
   customResizeObserver?: any
 }
 
