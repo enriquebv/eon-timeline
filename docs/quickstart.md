@@ -214,4 +214,4 @@ const timelineDom = new TimelineDOM({ range, container, timelines, onRender })
 </div>
 ```
 
-[TimelineDOM API](.).
+[TimelineDOM API](./timeline-dom-api.md).
