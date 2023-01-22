@@ -2,7 +2,6 @@
   height: 25px;
   position: relative;
   overflow: hidden;
-  padding: 0px 5px;
   background: #ecf0f1;
 }
 
@@ -10,5 +9,5 @@
   height: 15px;
   overflow: hidden;
   background: #3498db;
-  margin: 5px;
+  margin: 5px 0px;
 }

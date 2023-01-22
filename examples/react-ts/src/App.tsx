@@ -3,6 +3,7 @@ import { useState } from 'react'
 import './App.css'
 import '@eon-timeline/core/dist/styles.css'
 
+import MainTimeline from './timelines/MainTimeline'
 import SingleTimeline from './timelines/SingleTimeline'
 import MultipleSyncedTimelines from './timelines/MultipleSyncedTimelines'
 import TimlinesWithUnits from './timelines/TimelinesWithUnits'
@@ -26,6 +27,8 @@ function App() {
           <a href='https://github.com/enriquebv/eon-timeline'>GitHub</a>
         </li>
       </ul>
+
+      <MainTimeline />
 
       <div className='panels'>
         <div>

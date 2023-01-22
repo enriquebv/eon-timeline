@@ -1,0 +1,76 @@
+.main-timeline .eon-timeline {
+  height: 35px;
+  background: #151618;
+  border-bottom: 1px solid #1b1d1e;
+}
+
+.main-timeline .eon-timeline-ocurrence {
+  height: 25px;
+  line-height: 25px;
+  background: none;
+  border-radius: 2px;
+}
+
+.main-timeline .eon-timeline.unit .eon-timeline-ocurrence {
+  margin: 0;
+  line-height: 25px;
+  background: transparent;
+  color: #2c3e50;
+  overflow: visible;
+  margin: 5px 0px;
+}
+
+.eon-timeline.unit .eon-timeline-ocurrence .unit-ocurrence {
+  /* font-weight: bold; */
+  overflow: visible;
+  color: white;
+  font-size: 13px;
+}
+
+.main-timeline .eon-timeline:not(.unit) .eon-timeline-ocurrence {
+  transition: transform 0.075s ease-in-out;
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.15);
+}
+
+.main-timeline .eon-timeline:not(.unit) .eon-timeline-ocurrence::after {
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.main-timeline .eon-timeline:not(.unit) .eon-timeline-ocurrence:hover::after {
+  opacity: 1;
+}
+
+.main-timeline .eon-timeline:not(.unit) .eon-timeline-ocurrence:hover {
+  transform: scale(1.1);
+}
+
+span.unit-label {
+  transform: translate(-50%, 0);
+  display: block;
+}
+
+.eon-timeline-ocurrence .todo {
+  background: rgba(44, 62, 80, 0.6);
+}
+
+.eon-timeline-ocurrence .cancelled {
+  background: rgba(243, 156, 18, 0.6);
+}
+
+.eon-timeline-ocurrence .postponed {
+  background: rgba(127, 140, 141, 0.6);
+}
+
+.eon-timeline-ocurrence .approved {
+  background: rgba(39, 174, 96, 0.6);
+}
+
+.tooltip-table td {
+  text-align: left;
+}
+
+.tooltip-table td.status {
+  font-family: 'Courier New', Courier, monospace;
+}
